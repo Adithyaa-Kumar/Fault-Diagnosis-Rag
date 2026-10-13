@@ -1,85 +1,215 @@
-# src/pipeline/agent_runner.py
+
 import json
 import os
 from datetime import datetime
-from typing import List, Dict, Any
-from src.schema import ExecutionTrace, SpecialistTrace, FaultType, ProvenanceDocument
+from typing import List, Optional
+
+from src.schema import (
+    ExecutionTrace,
+    SpecialistTrace,
+    FaultType,
+    ProvenanceDocument,
+)
+
 
 class BaselinePipeline:
-    def __init__(self, model_name: str = "meta-llama/Meta-Llama-3-8B-Instruct"):
+    def __init__(self, model_name: str = "mock-pipeline"):
         self.model_name = model_name
         os.makedirs("logs", exist_ok=True)
 
-    def run_specialist(self, agent_id: str, assigned_docs: List[ProvenanceDocument], retrieved_docs: List[ProvenanceDocument], query: str, injected_fault: FaultType) -> SpecialistTrace:
-        context = "\n".join([f"[{d.doc_id}]: {d.content}" for d in assigned_docs])
-        actual_inputs = [f"Query: {query}", f"Context: {context}"]
-        raw_output = f"Specialist extracted context: {context}"
-        
-        if injected_fault == FaultType.SPECIALIST:
-            raw_output = "Specialist extracted context: [INJECTED FAULT] The Department of Treasury authorized the stabilization."
-            
+    def run_specialist(
+        self,
+        agent_id: str,
+        assigned_docs: List[ProvenanceDocument],
+        retrieved_docs: List[ProvenanceDocument],
+        query: str,
+        inject_specialist_fault: bool = False,
+    ) -> SpecialistTrace:
+        context = "\n".join(
+            f"[{doc.doc_id}]: {doc.content}"
+            for doc in assigned_docs
+        )
+
+        actual_inputs = [
+            f"Query: {query}",
+            f"Context: {context}",
+        ]
+
+        if inject_specialist_fault:
+            raw_output = (
+                "Specialist conclusion: "
+                "The Department of Treasury authorized the stabilization."
+            )
+        else:
+            raw_output = f"Specialist extracted context: {context}"
+
         return SpecialistTrace(
             agent_id=agent_id,
-            assigned_docs=[d.doc_id for d in assigned_docs],
+            assigned_docs=[doc.doc_id for doc in assigned_docs],
             retrieved_docs=retrieved_docs,
             actual_inputs=actual_inputs,
             raw_output=raw_output,
-            injected_fault=injected_fault
         )
 
-    def run_arbiter(self, specialist_traces: List[SpecialistTrace], gold_answer_keyword: str, injected_fault: FaultType) -> str:
-        combined_text = " ".join([t.raw_output for t in specialist_traces])
-        
-        if injected_fault == FaultType.ARBITER:
-            return "Arbiter Verdict: The Department of Treasury authorized the action."
-            
-        if gold_answer_keyword.lower() in combined_text.lower():
-            return f"Arbiter Verdict: Based on verified specialist evidence, the authorized agency is {gold_answer_keyword}."
-        else:
-            return "Arbiter Verdict: Insufficient evidence in retrieved documents to determine the authorizing agency."
+    def run_arbiter(
+        self,
+        specialist_traces: List[SpecialistTrace],
+        inject_arbiter_fault: bool = False,
+    ) -> str:
+        combined_text = " ".join(
+            trace.raw_output for trace in specialist_traces
+        ).lower()
 
-    def execute_pipeline(self, sample_path: str, condition_key: str, injected_layer: FaultType) -> ExecutionTrace:
-        with open(sample_path, "r") as f:
-            data = json.load(f)
+        if inject_arbiter_fault:
+            return (
+                "Arbiter Verdict: "
+                "The Department of Treasury authorized the action."
+            )
+
+        if "trade oversight commission" in combined_text or (
+            " toc " in f" {combined_text} "
+        ):
+            return (
+                "Arbiter Verdict: Based on the specialist evidence, "
+                "the authorized agency is the Trade Oversight Commission."
+            )
+
+        return (
+            "Arbiter Verdict: Insufficient evidence to determine "
+            "the authorizing agency."
+        )
+
+    @staticmethod
+    def diagnose_fault_layer(
+        specialist_traces: List[SpecialistTrace],
+        final_verdict: str,
+        original_corpus: List[ProvenanceDocument],
+    ) -> FaultType:
+        """
+        Diagnostic mock.
+
+        IMPORTANT:
+        This function receives observations only. It does not receive
+        the injected fault label or an ExecutionTrace containing it.
+        """
+        corpus_ids = {doc.doc_id for doc in original_corpus}
+
+        # Retrieval anomaly: an assigned document is absent from the
+        # original corpus. This uses observed trace state, not the label.
+        for trace in specialist_traces:
+            if any(doc_id not in corpus_ids for doc_id in trace.assigned_docs):
+                return FaultType.RETRIEVAL
+
+        verdict_lower = final_verdict.lower()
+
+        # Specialist anomaly: an individual specialist asserts the
+        # wrong agency.
+        for trace in specialist_traces:
+            output = trace.raw_output.lower()
+            if (
+                "department of treasury" in output
+                or "ministry of finance" in output
+            ):
+                return FaultType.SPECIALIST
+
+        # Arbiter anomaly: specialist evidence supports the TOC, but
+        # the final verdict conflicts with it.
+        specialists_support_toc = any(
+            "trade oversight commission" in trace.raw_output.lower()
+            or " toc " in f" {trace.raw_output.lower()} "
+            for trace in specialist_traces
+        )
+        arbiter_says_wrong_agency = (
+            "department of treasury" in verdict_lower
+            or "ministry of finance" in verdict_lower
+        )
+
+        if specialists_support_toc and arbiter_says_wrong_agency:
+            return FaultType.ARBITER
+
+        return FaultType.NONE
+
+    def execute_pipeline(
+        self,
+        sample_path: str,
+        condition_key: str,
+        injected_layer: FaultType,
+        documents_override: Optional[list] = None,
+    ) -> ExecutionTrace:
+        with open(sample_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
 
         query_id = data["query_id"]
         query = data["query"]
         gold_answer = data["gold_answer"]
-        raw_docs = data["conditions"][condition_key]
-        
-        documents = [ProvenanceDocument(**doc) for doc in raw_docs]
 
-        chunks = [[documents[i]] if i < len(documents) else [] for i in range(3)]
-        
+        raw_docs = (
+            documents_override
+            if documents_override is not None
+            else data["conditions"][condition_key]
+        )
+
+        documents = [
+            doc if isinstance(doc, ProvenanceDocument)
+            else ProvenanceDocument(**doc)
+            for doc in raw_docs
+        ]
+
+        # Keep three specialist slots. Empty input is allowed when a
+        # document has been removed by an intervention.
+        chunks = [
+            [documents[i]] if i < len(documents) else []
+            for i in range(3)
+        ]
+
         specialist_traces = []
-        for idx, chunk in enumerate(chunks):
-            agent_id = f"Specialist_{idx+1}"
-            original_retrieved_chunk = list(chunk)
-            
-            # Apply retrieval fault if targeted
-            if injected_layer == FaultType.RETRIEVAL and idx == 0:
-                chunk = [ProvenanceDocument(doc_id="faulty_doc", content="Irrelevant background information.", source_cluster_id="bad", claim_id="bad")]
-            
-            fault_to_inject = injected_layer if (injected_layer == FaultType.SPECIALIST and idx == 0) else FaultType.NONE
-            trace = self.run_specialist(agent_id, chunk, original_retrieved_chunk, query, fault_to_inject)
+
+        for idx, original_chunk in enumerate(chunks):
+            assigned_chunk = list(original_chunk)
+
+            # Inject retrieval corruption without exposing a fault label
+            # to the diagnostic function.
+            if injected_layer == FaultType.RETRIEVAL:
+                assigned_chunk = [
+                    ProvenanceDocument(
+                        doc_id=f"corrupted_retrieval_{idx}",
+                        content="Irrelevant background information unrelated "
+                                "to the requested authorizing agency.",
+                        source_cluster_id="corrupted_source",
+                        claim_id="irrelevant_claim",
+                    )
+                ]
+
+            trace = self.run_specialist(
+                agent_id=f"Specialist_{idx + 1}",
+                assigned_docs=assigned_chunk,
+                retrieved_docs=list(assigned_chunk),
+                query=query,
+                inject_specialist_fault=(
+                    injected_layer == FaultType.SPECIALIST and idx == 0
+                ),
+            )
             specialist_traces.append(trace)
 
-        arbiter_fault = injected_layer if injected_layer == FaultType.ARBITER else FaultType.NONE
-        keyword = "Trade Oversight Commission"
-        final_verdict = self.run_arbiter(specialist_traces, keyword, arbiter_fault)
+        final_verdict = self.run_arbiter(
+            specialist_traces,
+            inject_arbiter_fault=(injected_layer == FaultType.ARBITER),
+        )
 
-        is_failed = keyword.lower() not in final_verdict.lower()
+        # Diagnose BEFORE attaching ground-truth metadata to the trace.
+        predicted_layer = self.diagnose_fault_layer(
+            specialist_traces=specialist_traces,
+            final_verdict=final_verdict,
+            original_corpus=documents,
+        )
 
-        # Independent diagnostic prediction based on trace inspection
-        predicted_layer = FaultType.NONE
-        if any("[INJECTED FAULT]" in s.raw_output for s in specialist_traces):
-            predicted_layer = FaultType.SPECIALIST
-        elif any("faulty_doc" in s.assigned_docs for s in specialist_traces):
-            predicted_layer = FaultType.RETRIEVAL
-        elif "Department of Treasury" in final_verdict and injected_layer == FaultType.ARBITER:
-            predicted_layer = FaultType.ARBITER
+        # Ground truth is retained only for evaluator-side comparison.
+        from src.evaluation.scoring import AnswerScorer
 
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+        is_failed = not AnswerScorer.score_answer(
+            final_verdict, gold_answer
+        )
+
         execution_trace = ExecutionTrace(
             query_id=query_id,
             query=query,
@@ -90,11 +220,16 @@ class BaselinePipeline:
             final_verdict=final_verdict,
             injected_fault_layer=injected_layer,
             predicted_fault_layer=predicted_layer,
-            is_failed_trajectory=is_failed
+            is_failed_trajectory=is_failed,
         )
 
-        log_filename = f"logs/{query_id}_{condition_key}_{injected_layer.value}_{timestamp}.json"
-        with open(log_filename, "w") as log_file:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        log_filename = os.path.join(
+            "logs",
+            f"{query_id}_{condition_key}_{injected_layer.value}_{timestamp}.json",
+        )
+
+        with open(log_filename, "w", encoding="utf-8") as log_file:
             log_file.write(execution_trace.model_dump_json(indent=2))
 
         return execution_trace

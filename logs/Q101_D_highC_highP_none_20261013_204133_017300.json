@@ -1,0 +1,44 @@
+{
+  "query_id": "Q101",
+  "query": "Which regulatory agency authorized the Sector 7 supply chain subsidy?",
+  "gold_answer": "The Trade Oversight Commission (TOC).",
+  "condition": "D_highC_highP",
+  "original_corpus": [],
+  "specialist_traces": [
+    {
+      "agent_id": "Specialist_1",
+      "assigned_docs": [],
+      "retrieved_docs": [],
+      "actual_inputs": [
+        "Query: Which regulatory agency authorized the Sector 7 supply chain subsidy?",
+        "Context: "
+      ],
+      "raw_output": "Specialist extracted context: "
+    },
+    {
+      "agent_id": "Specialist_2",
+      "assigned_docs": [],
+      "retrieved_docs": [],
+      "actual_inputs": [
+        "Query: Which regulatory agency authorized the Sector 7 supply chain subsidy?",
+        "Context: "
+      ],
+      "raw_output": "Specialist extracted context: "
+    },
+    {
+      "agent_id": "Specialist_3",
+      "assigned_docs": [],
+      "retrieved_docs": [],
+      "actual_inputs": [
+        "Query: Which regulatory agency authorized the Sector 7 supply chain subsidy?",
+        "Context: "
+      ],
+      "raw_output": "Specialist extracted context: "
+    }
+  ],
+  "final_verdict": "Arbiter Verdict: Insufficient evidence to determine the authorizing agency.",
+  "injected_fault_layer": "none",
+  "predicted_fault_layer": "none",
+  "is_failed_trajectory": true,
+  "is_repaired": false
+}

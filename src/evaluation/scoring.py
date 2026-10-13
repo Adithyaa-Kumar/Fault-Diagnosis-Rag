@@ -1,41 +1,71 @@
-# src/evaluation/scoring.py
+
 import re
 
+
 class AnswerScorer:
-    @staticmethod
-    def score_answer(verdict: str, gold_answer: str) -> bool:
-        """
-        Structured answer scoring protecting against false positives, negations, 
-        and wrong entity assignments.
-        """
-        clean_verdict = verdict.lower().strip()
-        
-        # 1. Check for explicit negation of the target agency
-        negation_patterns = [
-            r"did not authorize", 
-            r"not authorized by", 
-            r"failed to authorize", 
-            r"incorrect to say.*trade oversight commission"
-        ]
-        for pattern in negation_patterns:
-            if re.search(pattern, clean_verdict):
-                return False
+    """Canonical answer scorer for the current TOC research pilot."""
 
-        # 2. Check for presence of wrong entities / competing agencies
-        wrong_entities = ["department of treasury", "ministry of finance", "unknown monetary policy"]
-        for entity in wrong_entities:
-            if entity in clean_verdict and "trade oversight commission" not in clean_verdict:
-                return False
+    TARGET = "trade oversight commission"
+    ALIASES = ("trade oversight commission", "toc")
+    WRONG_ENTITIES = (
+        "department of treasury",
+        "ministry of finance",
+        "unknown monetary policy",
+    )
+    ABSTENTIONS = (
+        "insufficient evidence",
+        "unable to determine",
+        "not enough information",
+        "cannot determine",
+    )
 
-        # 3. Canonical entity presence check
-        target_entities = ["trade oversight commission", "toc"]
-        has_target = any(entity in clean_verdict for entity in target_entities)
-        
-        # 4. Check for abstention / missing answer
-        abstention_phrases = ["insufficient evidence", "unable to determine", "not enough information"]
-        is_abstaining = any(phrase in clean_verdict for phrase in abstention_phrases)
-
-        if is_abstaining:
+    @classmethod
+    def score_answer(cls, verdict: str, gold_answer: str) -> bool:
+        if not isinstance(verdict, str) or not isinstance(gold_answer, str):
             return False
 
-        return has_target
+        text = verdict.lower().strip()
+        gold = gold_answer.lower().strip()
+
+        if not text or not gold:
+            return False
+
+        if any(phrase in text for phrase in cls.ABSTENTIONS):
+            return False
+
+        # Reject explicit negation of the target authorization.
+        negation_patterns = (
+            r"\b(?:did not|didn't|never)\s+authorize\b",
+            r"\bnot\s+authorized\s+by\b",
+            r"\bfailed\s+to\s+authorize\b",
+            r"\bincorrect\s+to\s+say\b",
+        )
+        if any(re.search(p, text) for p in negation_patterns):
+            return False
+
+        # Identify the target as a complete phrase/token, not a substring
+        # inside an unrelated word.
+        has_target = any(
+            re.search(r"\b" + re.escape(alias) + r"\b", text)
+            for alias in cls.ALIASES
+        )
+        if not has_target:
+            return False
+
+        # A wrong agency appearing alongside the target is ambiguous,
+        # so reject it rather than silently counting it as correct.
+        if any(entity in text for entity in cls.WRONG_ENTITIES):
+            return False
+
+        # This pilot has one canonical gold entity. Do not silently
+        # treat arbitrary gold answers as equivalent to the TOC answer.
+        gold_is_target = any(
+            re.search(r"\b" + re.escape(alias) + r"\b", gold)
+            for alias in cls.ALIASES
+        )
+        if not gold_is_target:
+            raise ValueError(
+                f"Unsupported gold answer for this scorer: {gold_answer!r}"
+            )
+
+        return True

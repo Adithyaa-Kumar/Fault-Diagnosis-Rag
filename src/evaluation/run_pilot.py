@@ -1,11 +1,30 @@
-# src/evaluation/run_pilot.py
+
 import json
-import os
-from typing import Dict, Any
+from collections import Counter
+from pathlib import Path
+from typing import Any
+
 from src.pipeline.agent_runner import BaselinePipeline
 from src.attribution.loo import ItemLevelLOO
 from src.attribution.cluster_ablation import ClusterAblation
 from src.schema import FaultType
+from src.evaluation.scoring import AnswerScorer
+
+
+CONDITIONS = [
+    "A_lowC_lowP",
+    "B_highC_lowP",
+    "C_lowC_highP",
+    "D_highC_highP",
+]
+
+FAULT_TYPES = [
+    FaultType.NONE,
+    FaultType.RETRIEVAL,
+    FaultType.SPECIALIST,
+    FaultType.ARBITER,
+]
+
 
 class PilotEvaluator:
     def __init__(self, sample_path: str):
@@ -14,66 +33,123 @@ class PilotEvaluator:
         self.loo_runner = ItemLevelLOO(self.pipeline)
         self.cluster_runner = ClusterAblation(self.pipeline)
 
-    def run_pilot_condition(self, condition_key: str) -> Dict[str, Any]:
-        """Runs baseline, LOO, cluster ablation, and scores diagnosis metrics for a condition."""
-        print(f"\n--- Running Pilot for Condition: {condition_key} ---")
-        
-        # 1. Baseline Execution
-        baseline_trace = self.pipeline.execute_pipeline(self.sample_path, condition_key, FaultType.NONE)
-        gold_answer = baseline_trace.gold_answer
-        baseline_success = gold_answer.lower() in baseline_trace.final_verdict.lower()
-        
-        failed_trajectories = 0 if baseline_success else 1
-        total_trajectories = 1
+    def execute_full_pilot(self) -> dict[str, Any]:
+        rows = []
+        confusion = Counter()
+        condition_diagnosis = Counter()
 
-        # 2. LOO Attribution
-        loo_results = self.loo_runner.evaluate_loo(self.sample_path, condition_key)
-        
-        # Calculate LOO ambiguity rate (e.g., if multiple items look equally critical due to redundancy)
-        critical_items = sum(1 for d in loo_results["loo_effects"].values() if d["is_critical"])
-        loo_ambiguity_rate = 1.0 if critical_items > 1 else 0.0
+        for condition in CONDITIONS:
+            for fault_type in FAULT_TYPES:
+                trace = self.pipeline.execute_pipeline(
+                    self.sample_path, condition, fault_type
+                )
 
-        # 3. Cluster Ablation
-        cluster_results = self.cluster_runner.evaluate_cluster_ablation(self.sample_path, condition_key)
-        cluster_repair_count = sum(1 for c in cluster_results["cluster_ablation_effects"].values() if c["is_critical_cluster"])
-        cluster_ablation_repair_rate = 1.0 if cluster_repair_count > 0 else 0.0
+                answer_correct = AnswerScorer.score_answer(
+                    trace.final_verdict, trace.gold_answer
+                )
 
-        # 4. Independent Fault-Layer Diagnosis Accuracy (Mock scoring based on successful provenance resolution)
-        fault_layer_accuracy = 100.0 if baseline_success else 0.0
+                predicted = trace.predicted_fault_layer
+                actual = trace.injected_fault_layer
+                diagnosis_correct = predicted == actual
 
-        # 5. Cost proxy (number of pipeline runs executed)
-        total_calls = 1 + len(loo_results["loo_effects"]) + len(cluster_results["cluster_ablation_effects"])
-        estimated_tokens = total_calls * 450  # approximate token footprint per run
+                confusion[(actual.value, predicted.value)] += 1
+                condition_diagnosis[
+                    (condition, actual.value, diagnosis_correct)
+                ] += 1
 
-        summary_row = {
-            "condition": condition_key,
-            "total_trajectories": total_trajectories,
-            "failed_trajectories": failed_trajectories,
-            "loo_ambiguity_rate": f"{loo_ambiguity_rate * 100}%",
-            "cluster_ablation_repair_rate": f"{cluster_ablation_repair_rate * 100}%",
-            "fault_layer_accuracy": f"{fault_layer_accuracy}%",
-            "calls_tokens_cost": f"{total_calls} calls / ~{estimated_tokens} tokens"
+                rows.append({
+                    "query_id": trace.query_id,
+                    "condition": condition,
+                    "injected_fault_layer": actual.value,
+                    "predicted_fault_layer": predicted.value,
+                    "diagnosis_correct": diagnosis_correct,
+                    "answer_correct": answer_correct,
+                    "is_failed_trajectory": not answer_correct,
+                    "final_verdict": trace.final_verdict,
+                })
+
+        total = len(rows)
+        correct_diagnoses = sum(
+            row["diagnosis_correct"] for row in rows
+        )
+
+        # Attribution analyses are run separately on the no-fault
+        # baseline for each experimental condition.
+        attribution_results = {}
+
+        for condition in CONDITIONS:
+            loo = self.loo_runner.evaluate_loo(
+                self.sample_path, condition
+            )
+            cluster = self.cluster_runner.evaluate_cluster_ablation(
+                self.sample_path, condition
+            )
+
+            attribution_results[condition] = {
+                "loo": loo,
+                "cluster_ablation": cluster,
+            }
+
+        fault_labels = [fault.value for fault in FAULT_TYPES]
+        confusion_matrix = {
+            actual: {
+                predicted: confusion[(actual, predicted)]
+                for predicted in fault_labels
+            }
+            for actual in fault_labels
         }
 
-        return summary_row
+        report = {
+            "pilot_type": "deterministic_mock_pipeline",
+            "expected_condition_fault_combinations": 16,
+            "executed_condition_fault_combinations": total,
+            "complete_factorial_coverage": total == 16,
+            "total_trajectories": total,
+            "failed_trajectories": sum(
+                row["is_failed_trajectory"] for row in rows
+            ),
+            "diagnosis_correct_count": correct_diagnoses,
+            "diagnosis_accuracy": (
+                correct_diagnoses / total if total else None
+            ),
+            "confusion_matrix": confusion_matrix,
+            "runs": rows,
+            "attribution_results": attribution_results,
+            "token_usage": None,
+            "api_cost": None,
+            "limitations": [
+                "Deterministic mock pipeline; not real LLM evaluation.",
+                "One synthetic query; no statistical generalization.",
+                "LOO and cluster-ablation effects are correctness effects, "
+                "not validated causal attribution ambiguity.",
+                "Cluster repair rate is not measured by ordinary ablation.",
+            ],
+        }
 
-    def execute_full_pilot(self) -> None:
-        """Executes the pilot across multiple specified conditions."""
-        conditions = ["A_lowC_lowP", "D_highC_highP"]
-        results_table = []
+        Path("logs").mkdir(exist_ok=True)
+        Path("logs/pilot_summary.json").write_text(
+            json.dumps(report, indent=2),
+            encoding="utf-8",
+        )
 
-        for cond in conditions:
-            row = self.run_pilot_condition(cond)
-            results_table.append(row)
+        print("\nPHASE 0 PILOT SUMMARY")
+        print("=" * 76)
+        print(f"Condition/fault combinations: {total}/16")
+        print(f"Failed trajectories: {report['failed_trajectories']}")
+        print(
+            "Fault diagnosis accuracy: "
+            f"{correct_diagnoses}/{total} "
+            f"({report['diagnosis_accuracy']:.1%})"
+            if total else "Fault diagnosis accuracy: N/A"
+        )
+        print("\nConfusion matrix:")
+        print(json.dumps(confusion_matrix, indent=2))
+        print("\nReport written to logs/pilot_summary.json")
+        print("Token usage and API cost: NOT MEASURED")
+        print("=" * 76)
 
-        print("\n==========================================================================")
-        print("                        PILOT EVALUATION SUMMARY                          ")
-        print("==========================================================================")
-        print(f"{'Condition':<15} | {'Total':<6} | {'Failed':<6} | {'LOO Ambig.':<12} | {'Cluster Repair':<15} | {'Diagnosis Acc.':<14} | {'Cost':<15}")
-        print("-" * 95)
-        for r in results_table:
-            print(f"{r['condition']:<15} | {r['total_trajectories']:<6} | {r['failed_trajectories']:<6} | {r['loo_ambiguity_rate']:<12} | {r['cluster_ablation_repair_rate']:<15} | {r['fault_layer_accuracy']:<14} | {r['calls_tokens_cost']:<15}")
-        print("==========================================================================")
+        return report
+
 
 if __name__ == "__main__":
     evaluator = PilotEvaluator("data/seed_sample.json")

@@ -1,0 +1,90 @@
+{
+  "query_id": "Q101",
+  "query": "Which regulatory agency authorized the Sector 7 supply chain subsidy?",
+  "gold_answer": "The Trade Oversight Commission (TOC).",
+  "condition": "D_highC_highP",
+  "original_corpus": [
+    {
+      "doc_id": "d1",
+      "content": "The Trade Oversight Commission authorized the Sector 7 supply chain subsidy.",
+      "source_cluster_id": "src_master_source",
+      "claim_id": "claim_toc_auth"
+    },
+    {
+      "doc_id": "d2",
+      "content": "The Trade Oversight Commission authorized the Sector 7 supply chain subsidy.",
+      "source_cluster_id": "src_master_source",
+      "claim_id": "claim_toc_auth"
+    },
+    {
+      "doc_id": "d3",
+      "content": "The Trade Oversight Commission authorized the Sector 7 supply chain subsidy.",
+      "source_cluster_id": "src_master_source",
+      "claim_id": "claim_toc_auth"
+    }
+  ],
+  "specialist_traces": [
+    {
+      "agent_id": "Specialist_1",
+      "assigned_docs": [
+        "retrieved_doc_0"
+      ],
+      "retrieved_docs": [
+        {
+          "doc_id": "retrieved_doc_0",
+          "content": "Irrelevant background information.",
+          "source_cluster_id": "unknown_source",
+          "claim_id": "irrelevant_claim"
+        }
+      ],
+      "actual_inputs": [
+        "Query: Which regulatory agency authorized the Sector 7 supply chain subsidy?",
+        "Context: [retrieved_doc_0]: Irrelevant background information."
+      ],
+      "raw_output": "Specialist extracted context: [retrieved_doc_0]: Irrelevant background information."
+    },
+    {
+      "agent_id": "Specialist_2",
+      "assigned_docs": [
+        "d2"
+      ],
+      "retrieved_docs": [
+        {
+          "doc_id": "d2",
+          "content": "The Trade Oversight Commission authorized the Sector 7 supply chain subsidy.",
+          "source_cluster_id": "src_master_source",
+          "claim_id": "claim_toc_auth"
+        }
+      ],
+      "actual_inputs": [
+        "Query: Which regulatory agency authorized the Sector 7 supply chain subsidy?",
+        "Context: [d2]: The Trade Oversight Commission authorized the Sector 7 supply chain subsidy."
+      ],
+      "raw_output": "Specialist extracted context: [d2]: The Trade Oversight Commission authorized the Sector 7 supply chain subsidy."
+    },
+    {
+      "agent_id": "Specialist_3",
+      "assigned_docs": [
+        "d3"
+      ],
+      "retrieved_docs": [
+        {
+          "doc_id": "d3",
+          "content": "The Trade Oversight Commission authorized the Sector 7 supply chain subsidy.",
+          "source_cluster_id": "src_master_source",
+          "claim_id": "claim_toc_auth"
+        }
+      ],
+      "actual_inputs": [
+        "Query: Which regulatory agency authorized the Sector 7 supply chain subsidy?",
+        "Context: [d3]: The Trade Oversight Commission authorized the Sector 7 supply chain subsidy."
+      ],
+      "raw_output": "Specialist extracted context: [d3]: The Trade Oversight Commission authorized the Sector 7 supply chain subsidy."
+    }
+  ],
+  "final_verdict": "Arbiter Verdict: Based on the specialist evidence, the authorized agency is the Trade Oversight Commission.",
+  "injected_fault_layer": "retrieval",
+  "predicted_fault_layer": "retrieval",
+  "is_failed_trajectory": false,
+  "is_repaired": false
+}
