@@ -1,15 +1,27 @@
 {
   "query_id": "Q101",
-  "query": "What was the primary driver of the 2024 economic stabilization in Sector 7, and which regulatory agency authorized it?",
-  "gold_answer": "The stabilization was driven by the regional supply chain subsidy authorized by the Trade Oversight Commission (TOC).",
+  "query": "Which regulatory agency authorized the primary driver of the Sector 7 economic stabilization?",
+  "gold_answer": "The Trade Oversight Commission (TOC).",
   "conditions": {
     "A_lowC_lowP": [
-      {"doc_id": "d1", "content": "The Trade Oversight Commission authorized supply chain subsidies in Sector 7.", "source_cluster_id": "src_toc", "claim_id": "claim_auth"},
-      {"doc_id": "d2", "content": "Regional infrastructure spending increased by 15% across Sector 7.", "source_cluster_id": "src_fiscal", "claim_id": "claim_infra"}
+      {"doc_id": "d1", "content": "Official Report A: The Trade Oversight Commission authorized the Sector 7 supply chain subsidy.", "source_cluster_id": "src_independent_1", "claim_id": "claim_toc_auth"},
+      {"doc_id": "d2", "content": "Official Report B: Regional infrastructure spending increased by 15% across Sector 7.", "source_cluster_id": "src_independent_2", "claim_id": "claim_infra"},
+      {"doc_id": "d3", "content": "Official Report C: Employment rates in Sector 7 rose steadily through Q3.", "source_cluster_id": "src_independent_3", "claim_id": "claim_employment"}
+    ],
+    "B_highC_lowP": [
+      {"doc_id": "d1", "content": "Independent Bulletin 1: The Trade Oversight Commission authorized the Sector 7 supply chain subsidy.", "source_cluster_id": "src_independent_1", "claim_id": "claim_toc_auth"},
+      {"doc_id": "d2", "content": "Independent Bulletin 2: Separate reports confirm the Trade Oversight Commission authorized the Sector 7 supply chain subsidy.", "source_cluster_id": "src_independent_2", "claim_id": "claim_toc_auth"},
+      {"doc_id": "d3", "content": "Independent Bulletin 3: Sector 7 stabilization was driven by the Trade Oversight Commission subsidy program.", "source_cluster_id": "src_independent_3", "claim_id": "claim_toc_auth"}
+    ],
+    "C_lowC_highP": [
+      {"doc_id": "d1", "content": "Master Document (Section 1): The Trade Oversight Commission authorized the Sector 7 supply chain subsidy.", "source_cluster_id": "src_master_source", "claim_id": "claim_toc_auth"},
+      {"doc_id": "d2", "content": "Master Document (Section 2): Regional infrastructure spending increased by 15% across Sector 7.", "source_cluster_id": "src_master_source", "claim_id": "claim_infra"},
+      {"doc_id": "d3", "content": "Master Document (Section 3): Employment rates in Sector 7 rose steadily through Q3.", "source_cluster_id": "src_master_source", "claim_id": "claim_employment"}
     ],
     "D_highC_highP": [
-      {"doc_id": "d1", "content": "Official TOC Bulletin: The Trade Oversight Commission authorized the Sector 7 supply chain subsidy.", "source_cluster_id": "src_toc", "claim_id": "claim_auth"},
-      {"doc_id": "d2", "content": "TOC Press Release Summary: The Sector 7 subsidy program was authorized by the Trade Oversight Commission.", "source_cluster_id": "src_toc", "claim_id": "claim_auth"}
+      {"doc_id": "d1", "content": "Master Summary Copy 1: The Trade Oversight Commission authorized the Sector 7 supply chain subsidy.", "source_cluster_id": "src_master_source", "claim_id": "claim_toc_auth"},
+      {"doc_id": "d2", "content": "Master Summary Copy 2: Sector 7 stabilization was driven by the Trade Oversight Commission subsidy.", "source_cluster_id": "src_master_source", "claim_id": "claim_toc_auth"},
+      {"doc_id": "d3", "content": "Master Summary Copy 3: The TOC authorized the subsidy in Sector 7.", "source_cluster_id": "src_master_source", "claim_id": "claim_toc_auth"}
     ]
   }
 }
