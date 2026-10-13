@@ -1,0 +1,15 @@
+{
+  "query_id": "Q101",
+  "query": "What was the primary driver of the 2024 economic stabilization in Sector 7, and which regulatory agency authorized it?",
+  "gold_answer": "The stabilization was driven by the regional supply chain subsidy authorized by the Trade Oversight Commission (TOC).",
+  "conditions": {
+    "A_lowC_lowP": [
+      {"doc_id": "d1", "content": "The Trade Oversight Commission authorized supply chain subsidies in Sector 7.", "source_cluster_id": "src_toc", "claim_id": "claim_auth"},
+      {"doc_id": "d2", "content": "Regional infrastructure spending increased by 15% across Sector 7.", "source_cluster_id": "src_fiscal", "claim_id": "claim_infra"}
+    ],
+    "D_highC_highP": [
+      {"doc_id": "d1", "content": "Official TOC Bulletin: The Trade Oversight Commission authorized the Sector 7 supply chain subsidy.", "source_cluster_id": "src_toc", "claim_id": "claim_auth"},
+      {"doc_id": "d2", "content": "TOC Press Release Summary: The Sector 7 subsidy program was authorized by the Trade Oversight Commission.", "source_cluster_id": "src_toc", "claim_id": "claim_auth"}
+    ]
+  }
+}

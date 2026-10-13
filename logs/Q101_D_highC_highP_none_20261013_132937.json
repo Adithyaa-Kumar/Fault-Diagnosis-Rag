@@ -1,0 +1,48 @@
+{
+  "query_id": "Q101",
+  "query": "What was the primary driver of the 2024 economic stabilization in Sector 7, and which regulatory agency authorized it?",
+  "gold_answer": "The stabilization was driven by the regional supply chain subsidy authorized by the Trade Oversight Commission (TOC).",
+  "condition": "D_highC_highP",
+  "documents": [
+    {
+      "doc_id": "d1",
+      "content": "Official TOC Bulletin: The Trade Oversight Commission authorized the Sector 7 supply chain subsidy.",
+      "source_cluster_id": "src_toc",
+      "claim_id": "claim_auth"
+    },
+    {
+      "doc_id": "d2",
+      "content": "TOC Press Release Summary: The Sector 7 subsidy program was authorized by the Trade Oversight Commission.",
+      "source_cluster_id": "src_toc",
+      "claim_id": "claim_auth"
+    }
+  ],
+  "specialist_traces": [
+    {
+      "agent_id": "Specialist_1",
+      "assigned_docs": [
+        "d1"
+      ],
+      "raw_output": "Processed 1 documents for query: 'What was the primary driver of the 2024 economic stabilization in Sector 7, and which regulatory agency authorized it?'. Context summary: [d1]: Official TOC Bulletin: The Trade Oversight Commission authorized the Sector 7 supply chain sub...",
+      "injected_fault": "none"
+    },
+    {
+      "agent_id": "Specialist_2",
+      "assigned_docs": [
+        "d2"
+      ],
+      "raw_output": "Processed 1 documents for query: 'What was the primary driver of the 2024 economic stabilization in Sector 7, and which regulatory agency authorized it?'. Context summary: [d2]: TOC Press Release Summary: The Sector 7 subsidy program was authorized by the Trade Oversight ...",
+      "injected_fault": "none"
+    },
+    {
+      "agent_id": "Specialist_3",
+      "assigned_docs": [],
+      "raw_output": "Processed 0 documents for query: 'What was the primary driver of the 2024 economic stabilization in Sector 7, and which regulatory agency authorized it?'. Context summary: ...",
+      "injected_fault": "none"
+    }
+  ],
+  "final_verdict": "Arbiter Synthesis: Based on specialist findings (Processed 1 documents for query: 'What was the primary driver of the 2024 economic stabilization in Sector 7, and which regulatory agency authorized it?'. Context summary: [d1]: Official TOC Bulletin: The Trade Oversight Commission authorized the Sector 7 supply chain sub... | Processed 1 documents for query: 'What was the primary driver of the 2024 economic stabilization in Sector 7, and which regulatory agency authorized it?'. Context summary: [d2]: TOC Press Release Summary: The Sector 7 subsidy program was authorized by the Trade Oversight ... | Processed 0 documents for query: 'What was the primary driver of the 2024 economic stabilization in Sector 7, and which regulatory agency authorized it?'. Context summary: ...), the stabilization was driven by the regional supply chain subsidy authorized by the Trade Oversight Commission (TOC).",
+  "gold_log_prob": null,
+  "injected_fault_layer": "none",
+  "is_failed_trajectory": false
+}
