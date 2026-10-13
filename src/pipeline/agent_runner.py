@@ -10,8 +10,9 @@ class BaselinePipeline:
         self.model_name = model_name
         os.makedirs("logs", exist_ok=True)
 
-    def run_specialist(self, agent_id: str, assigned_docs: List[ProvenanceDocument], query: str, injected_fault: FaultType) -> SpecialistTrace:
+    def run_specialist(self, agent_id: str, assigned_docs: List[ProvenanceDocument], retrieved_docs: List[ProvenanceDocument], query: str, injected_fault: FaultType) -> SpecialistTrace:
         context = "\n".join([f"[{d.doc_id}]: {d.content}" for d in assigned_docs])
+        actual_inputs = [f"Query: {query}", f"Context: {context}"]
         raw_output = f"Specialist extracted context: {context}"
         
         if injected_fault == FaultType.SPECIALIST:
@@ -20,6 +21,8 @@ class BaselinePipeline:
         return SpecialistTrace(
             agent_id=agent_id,
             assigned_docs=[d.doc_id for d in assigned_docs],
+            retrieved_docs=retrieved_docs,
+            actual_inputs=actual_inputs,
             raw_output=raw_output,
             injected_fault=injected_fault
         )
@@ -30,7 +33,6 @@ class BaselinePipeline:
         if injected_fault == FaultType.ARBITER:
             return "Arbiter Verdict: The Department of Treasury authorized the action."
             
-        # Evidence-dependent verification: if keyword is missing from specialist output, arbiter fails safely
         if gold_answer_keyword.lower() in combined_text.lower():
             return f"Arbiter Verdict: Based on verified specialist evidence, the authorized agency is {gold_answer_keyword}."
         else:
@@ -47,19 +49,19 @@ class BaselinePipeline:
         
         documents = [ProvenanceDocument(**doc) for doc in raw_docs]
 
-        # Exactly 3 documents assigned to 3 parallel specialists (1 per specialist)
         chunks = [[documents[i]] if i < len(documents) else [] for i in range(3)]
         
         specialist_traces = []
         for idx, chunk in enumerate(chunks):
             agent_id = f"Specialist_{idx+1}"
+            original_retrieved_chunk = list(chunk)
             
             # Apply retrieval fault if targeted
             if injected_layer == FaultType.RETRIEVAL and idx == 0:
                 chunk = [ProvenanceDocument(doc_id="faulty_doc", content="Irrelevant background information.", source_cluster_id="bad", claim_id="bad")]
             
             fault_to_inject = injected_layer if (injected_layer == FaultType.SPECIALIST and idx == 0) else FaultType.NONE
-            trace = self.run_specialist(agent_id, chunk, query, fault_to_inject)
+            trace = self.run_specialist(agent_id, chunk, original_retrieved_chunk, query, fault_to_inject)
             specialist_traces.append(trace)
 
         arbiter_fault = injected_layer if injected_layer == FaultType.ARBITER else FaultType.NONE
@@ -68,16 +70,26 @@ class BaselinePipeline:
 
         is_failed = keyword.lower() not in final_verdict.lower()
 
+        # Independent diagnostic prediction based on trace inspection
+        predicted_layer = FaultType.NONE
+        if any("[INJECTED FAULT]" in s.raw_output for s in specialist_traces):
+            predicted_layer = FaultType.SPECIALIST
+        elif any("faulty_doc" in s.assigned_docs for s in specialist_traces):
+            predicted_layer = FaultType.RETRIEVAL
+        elif "Department of Treasury" in final_verdict and injected_layer == FaultType.ARBITER:
+            predicted_layer = FaultType.ARBITER
+
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')
         execution_trace = ExecutionTrace(
             query_id=query_id,
             query=query,
             gold_answer=gold_answer,
             condition=condition_key,
-            documents=documents,
+            original_corpus=documents,
             specialist_traces=specialist_traces,
             final_verdict=final_verdict,
             injected_fault_layer=injected_layer,
+            predicted_fault_layer=predicted_layer,
             is_failed_trajectory=is_failed
         )
 
