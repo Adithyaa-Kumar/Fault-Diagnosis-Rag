@@ -29,7 +29,16 @@ def test_canonical_scoring():
         "Insufficient evidence to determine the agency.", gold
     )
     assert not AnswerScorer.score_answer("", gold)
+    
+    assert not AnswerScorer.score_answer(
+        "The claim that the Trade Oversight Commission authorized it is false.",
+        gold,
+    )
 
+    assert not AnswerScorer.score_answer(
+        "The Trade Oversight Commission did not approve the subsidy.",
+        gold,
+    )
 
 def test_dataset_validation():
     assert validate_dataset(DATA_PATH) == []

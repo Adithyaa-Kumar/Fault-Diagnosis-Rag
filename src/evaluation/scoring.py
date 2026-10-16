@@ -43,6 +43,18 @@ class AnswerScorer:
         if any(re.search(p, text) for p in negation_patterns):
             return False
 
+                # Reject statements that explicitly deny the target claim.
+        denial_patterns = (
+            r"\b(?:claim|statement|assertion)\s+that\b.*\b"
+            r"(?:is|was)\s+false\b",
+            r"\b(?:false|incorrect)\s+(?:claim|statement|assertion)\b",
+            r"\b(?:did not|didn't|never)\s+"
+            r"(?:approve|authorize|grant)\b",
+            r"\bwas not responsible for\s+(?:approving|authorizing)\b",
+        )
+
+        if any(re.search(pattern, text) for pattern in denial_patterns):
+            return False
         # Identify the target as a complete phrase/token, not a substring
         # inside an unrelated word.
         has_target = any(
