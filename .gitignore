@@ -1,0 +1,27 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local environments and secrets
+venv/
+.venv/
+.env
+.env.*
+
+# Downloaded model weights and datasets
+models/
+data/raw/*
+data/processed/*
+
+# Generated experiment outputs
+logs/*
+results/*
+
+# Preserve directory structure
+!logs/.gitkeep
+!results/.gitkeep
+!data/raw/.gitkeep
+!data/processed/.gitkeep

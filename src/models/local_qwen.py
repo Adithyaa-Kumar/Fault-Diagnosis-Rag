@@ -14,6 +14,12 @@ from transformers import (
 class LocalQwen:
     """Shared local Qwen model for generation and gold-answer scoring."""
 
+    DEFAULT_SYSTEM_PROMPT = (
+        "Answer the question using the supplied context. "
+        "If the context does not contain enough information, "
+        "state that the information is insufficient."
+    )
+
     def __init__(
         self,
         model_id: str = "Qwen/Qwen2.5-7B-Instruct",
@@ -24,6 +30,9 @@ class LocalQwen:
                 "CUDA is unavailable. Activate the project venv "
                 "with CUDA-enabled PyTorch."
             )
+
+        if max_new_tokens < 1:
+            raise ValueError("max_new_tokens must be positive.")
 
         self.model_id = model_id
         self.max_new_tokens = max_new_tokens
@@ -72,44 +81,86 @@ class LocalQwen:
             },
         ]
 
+    def _tokenize_messages(
+        self,
+        messages: list[dict[str, str]],
+        *,
+        add_generation_prompt: bool,
+    ) -> torch.Tensor:
+        """Return input_ids regardless of the tokenizer API return type."""
+        encoded = self.tokenizer.apply_chat_template(
+            messages,
+            tokenize=True,
+            add_generation_prompt=add_generation_prompt,
+            return_tensors="pt",
+        )
+
+        # Transformers versions may return either a Tensor or a
+        # BatchEncoding containing input_ids.
+        if isinstance(encoded, torch.Tensor):
+            input_ids = encoded
+        else:
+            input_ids = encoded.get("input_ids")
+
+        if not isinstance(input_ids, torch.Tensor):
+            raise TypeError(
+                "Chat template did not return an input_ids tensor. "
+                f"Received: {type(encoded).__name__}"
+            )
+
+        if input_ids.ndim != 2 or input_ids.shape[0] != 1:
+            raise ValueError(
+                "Expected input_ids with shape [1, sequence_length]; "
+                f"received {tuple(input_ids.shape)}."
+            )
+
+        return input_ids.to(self.device)
+
     def _tokenize_prompt(
         self,
         messages: list[dict[str, str]],
     ) -> torch.Tensor:
-        return self.tokenizer.apply_chat_template(
+        return self._tokenize_messages(
             messages,
-            tokenize=True,
             add_generation_prompt=True,
-            return_tensors="pt",
-        ).to(self.device)
+        )
 
     @torch.inference_mode()
     def generate_answer(
         self,
         context: str,
         question: str,
-        system_prompt: str = (
-            "Answer the question using the supplied context. "
-            "If the context does not contain enough information, "
-            "state that the information is insufficient."
-        ),
+        system_prompt: str = DEFAULT_SYSTEM_PROMPT,
         max_new_tokens: int | None = None,
     ) -> dict[str, Any]:
         messages = self._messages(
-            context, question, system_prompt
+            context,
+            question,
+            system_prompt,
         )
         input_ids = self._tokenize_prompt(messages)
 
+        token_limit = (
+            self.max_new_tokens
+            if max_new_tokens is None
+            else max_new_tokens
+        )
+        if token_limit < 1:
+            raise ValueError("max_new_tokens must be positive.")
+
         output_ids = self.model.generate(
             input_ids=input_ids,
-            max_new_tokens=(
-                max_new_tokens or self.max_new_tokens
-            ),
+            max_new_tokens=token_limit,
             do_sample=False,
-            pad_token_id=self.tokenizer.eos_token_id,
+            pad_token_id=(
+                self.tokenizer.pad_token_id
+                if self.tokenizer.pad_token_id is not None
+                else self.tokenizer.eos_token_id
+            ),
             use_cache=True,
         )
 
+        # Decode only newly generated tokens, not the prompt.
         answer_ids = output_ids[0, input_ids.shape[1]:]
         answer = self.tokenizer.decode(
             answer_ids,
@@ -129,41 +180,41 @@ class LocalQwen:
         context: str,
         question: str,
         gold_answer: str,
-        system_prompt: str = (
-            "Answer the question using the supplied context. "
-            "If the context does not contain enough information, "
-            "state that the information is insufficient."
-        ),
+        system_prompt: str = DEFAULT_SYSTEM_PROMPT,
     ) -> dict[str, Any]:
         """
         Compute conditional log-likelihood over gold-answer tokens.
 
-        The prompt is excluded. The final chat end token is excluded.
-        Raises an error if prompt/answer token boundaries do not align.
+        Excludes the prompt and the final end-of-turn token.
+        Rejects ambiguous prompt/answer token boundaries.
         """
         if not gold_answer.strip():
             raise ValueError("gold_answer must not be empty.")
 
         messages = self._messages(
-            context, question, system_prompt
+            context,
+            question,
+            system_prompt,
         )
 
         prompt_ids = self._tokenize_prompt(messages)
 
         full_messages = messages + [
-            {"role": "assistant", "content": gold_answer}
+            {
+                "role": "assistant",
+                "content": gold_answer,
+            }
         ]
 
-        full_ids = self.tokenizer.apply_chat_template(
+        full_ids = self._tokenize_messages(
             full_messages,
-            tokenize=True,
             add_generation_prompt=False,
-            return_tensors="pt",
         )
 
         prompt_length = prompt_ids.shape[1]
 
-        if not torch.equal(
+        # Refuse to score if the answer's token boundary is ambiguous.
+        if full_ids.shape[1] <= prompt_length or not torch.equal(
             full_ids[0, :prompt_length].cpu(),
             prompt_ids[0].cpu(),
         ):
@@ -175,40 +226,37 @@ class LocalQwen:
         answer_end = full_ids.shape[1]
 
         # Exclude the terminal end-of-turn token, if present.
+        eos_token_id = self.tokenizer.eos_token_id
         if (
-            self.tokenizer.eos_token_id is not None
-            and full_ids[0, -1].item()
-            == self.tokenizer.eos_token_id
+            eos_token_id is not None
+            and full_ids[0, -1].item() == eos_token_id
         ):
             answer_end -= 1
 
         answer_token_count = answer_end - prompt_length
-
         if answer_token_count <= 0:
             raise RuntimeError("No gold-answer tokens to score.")
 
-        input_ids = full_ids.to(self.device)
-        attention_mask = torch.ones_like(input_ids)
+        attention_mask = torch.ones_like(full_ids)
 
         outputs = self.model(
-            input_ids=input_ids,
+            input_ids=full_ids,
             attention_mask=attention_mask,
             use_cache=False,
         )
 
-        # Logits at position t predict token t+1.
+        # Logit at position t predicts token t+1.
         logits = outputs.logits[
             0,
             prompt_length - 1 : answer_end - 1,
             :,
         ].float()
 
-        target_ids = input_ids[
-            0, prompt_length:answer_end
-        ]
+        target_ids = full_ids[0, prompt_length:answer_end]
 
         token_log_probs = torch.log_softmax(
-            logits, dim=-1
+            logits,
+            dim=-1,
         ).gather(
             dim=-1,
             index=target_ids.unsqueeze(-1),
