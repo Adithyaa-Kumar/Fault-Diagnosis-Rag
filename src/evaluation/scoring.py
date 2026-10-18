@@ -1,83 +1,78 @@
-
+"""Canonical answer scoring and counterfactual repair predicate."""
 import re
+import string
+from collections import Counter
+from typing import Any, Iterable, Optional
 
 
 class AnswerScorer:
-    """Canonical answer scorer for the current TOC research pilot."""
+    ABSTENTION_PHRASES = (
+        "insufficient evidence", "unable to determine", "not enough information",
+        "cannot determine", "could not determine", "insufficient information",
+    )
+    NEGATION_PATTERNS = (
+        r"did not authorize", r"not authorized by", r"failed to authorize",
+        r"incorrect to say.*trade oversight commission",
+        r"claim that.*is false", r"statement that.*is false",
+    )
+    HOTPOTQA_F1_THRESHOLD = 0.5
 
-    TARGET = "trade oversight commission"
-    ALIASES = ("trade oversight commission", "toc")
-    WRONG_ENTITIES = (
-        "department of treasury",
-        "ministry of finance",
-        "unknown monetary policy",
-    )
-    ABSTENTIONS = (
-        "insufficient evidence",
-        "unable to determine",
-        "not enough information",
-        "cannot determine",
-    )
+    @staticmethod
+    def _normalise(text: str) -> str:
+        text = (text or "").lower()
+        text = "".join(ch for ch in text if ch not in set(string.punctuation))
+        text = re.sub(r"\b(a|an|the)\b", " ", text)
+        return " ".join(text.split())
 
     @classmethod
-    def score_answer(cls, verdict: str, gold_answer: str) -> bool:
+    def _is_abstention_or_denial(cls, verdict: str) -> bool:
+        clean = cls._normalise(verdict)
+        if not clean or any(p in clean for p in cls.ABSTENTION_PHRASES):
+            return True
+        return any(re.search(pattern, (verdict or "").lower()) for pattern in cls.NEGATION_PATTERNS)
+
+    @staticmethod
+    def is_repair(baseline_correct: bool, intervention_correct: bool) -> bool:
+        """A repair is strictly incorrect baseline -> correct intervention."""
+        return (not bool(baseline_correct)) and bool(intervention_correct)
+
+    @classmethod
+    def score_metrics(
+        cls, verdict: str, gold_answer: str,
+        required_claims: Optional[Iterable[dict[str, Any]]] = None,
+    ) -> dict[str, Any]:
         if not isinstance(verdict, str) or not isinstance(gold_answer, str):
-            return False
+            return {"correct": False, "exact_match": False, "token_f1": 0.0, "scoring_mode": "invalid_input"}
+        if cls._is_abstention_or_denial(verdict):
+            return {"correct": False, "exact_match": False, "token_f1": 0.0,
+                    "scoring_mode": "required_claims" if required_claims else "hotpotqa_em_f1"}
 
-        text = verdict.lower().strip()
-        gold = gold_answer.lower().strip()
+        if required_claims:
+            clean = cls._normalise(verdict)
+            passed = True
+            for claim in required_claims:
+                terms = claim.get("match_terms", [])
+                if not terms or not all(cls._normalise(term) in clean for term in terms):
+                    passed = False
+                    break
+            return {"correct": passed, "exact_match": passed, "token_f1": 1.0 if passed else 0.0,
+                    "scoring_mode": "required_claims"}
 
-        if not text or not gold:
-            return False
+        pred = cls._normalise(verdict)
+        gold = cls._normalise(gold_answer)
+        if not pred or not gold:
+            return {"correct": False, "exact_match": False, "token_f1": 0.0, "scoring_mode": "hotpotqa_em_f1"}
+        exact = pred == gold
+        pred_tokens, gold_tokens = pred.split(), gold.split()
+        common = Counter(pred_tokens) & Counter(gold_tokens)
+        overlap = sum(common.values())
+        precision = overlap / len(pred_tokens) if pred_tokens else 0.0
+        recall = overlap / len(gold_tokens) if gold_tokens else 0.0
+        f1 = (2 * precision * recall / (precision + recall)) if precision + recall else 0.0
+        return {"correct": bool(exact or f1 >= cls.HOTPOTQA_F1_THRESHOLD),
+                "exact_match": exact, "token_f1": f1, "scoring_mode": "hotpotqa_em_f1"}
 
-        if any(phrase in text for phrase in cls.ABSTENTIONS):
-            return False
-
-        # Reject explicit negation of the target authorization.
-        negation_patterns = (
-            r"\b(?:did not|didn't|never)\s+authorize\b",
-            r"\bnot\s+authorized\s+by\b",
-            r"\bfailed\s+to\s+authorize\b",
-            r"\bincorrect\s+to\s+say\b",
-        )
-        if any(re.search(p, text) for p in negation_patterns):
-            return False
-
-                # Reject statements that explicitly deny the target claim.
-        denial_patterns = (
-            r"\b(?:claim|statement|assertion)\s+that\b.*\b"
-            r"(?:is|was)\s+false\b",
-            r"\b(?:false|incorrect)\s+(?:claim|statement|assertion)\b",
-            r"\b(?:did not|didn't|never)\s+"
-            r"(?:approve|authorize|grant)\b",
-            r"\bwas not responsible for\s+(?:approving|authorizing)\b",
-        )
-
-        if any(re.search(pattern, text) for pattern in denial_patterns):
-            return False
-        # Identify the target as a complete phrase/token, not a substring
-        # inside an unrelated word.
-        has_target = any(
-            re.search(r"\b" + re.escape(alias) + r"\b", text)
-            for alias in cls.ALIASES
-        )
-        if not has_target:
-            return False
-
-        # A wrong agency appearing alongside the target is ambiguous,
-        # so reject it rather than silently counting it as correct.
-        if any(entity in text for entity in cls.WRONG_ENTITIES):
-            return False
-
-        # This pilot has one canonical gold entity. Do not silently
-        # treat arbitrary gold answers as equivalent to the TOC answer.
-        gold_is_target = any(
-            re.search(r"\b" + re.escape(alias) + r"\b", gold)
-            for alias in cls.ALIASES
-        )
-        if not gold_is_target:
-            raise ValueError(
-                f"Unsupported gold answer for this scorer: {gold_answer!r}"
-            )
-
-        return True
+    @classmethod
+    def score_answer(cls, verdict: str, gold_answer: str,
+                     required_claims: Optional[Iterable[dict[str, Any]]] = None) -> bool:
+        return bool(cls.score_metrics(verdict, gold_answer, required_claims)["correct"])

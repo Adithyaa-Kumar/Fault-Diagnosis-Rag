@@ -1,78 +1,60 @@
-
 import json
 from typing import Any, Dict
-
-from src.pipeline.agent_runner import BaselinePipeline
-from src.schema import FaultType
 from src.evaluation.scoring import AnswerScorer
+from src.schema import FaultType
 
 
 class ItemLevelLOO:
-    def __init__(self, pipeline: BaselinePipeline):
+    """Leave one document out and score every counterfactual with AnswerScorer."""
+    def __init__(self, pipeline):
         self.pipeline = pipeline
 
-    def evaluate_loo(
-        self, sample_path: str, condition_key: str
-    ) -> Dict[str, Any]:
-        with open(sample_path, "r", encoding="utf-8") as file:
-            data = json.load(file)
-
-        original_docs = data["conditions"][condition_key]
-
+    def evaluate_loo(self, sample_path: str, condition_key: str) -> Dict[str, Any]:
+        with open(sample_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        docs = data["conditions"][condition_key]
         baseline = self.pipeline.execute_pipeline(
-            sample_path, condition_key, FaultType.NONE
+            sample_path, condition_key, FaultType.NONE, write_log=False
         )
-        baseline_success = AnswerScorer.score_answer(
-            baseline.final_verdict, baseline.gold_answer
+        baseline_metrics = AnswerScorer.score_metrics(
+            baseline.final_verdict, baseline.gold_answer, baseline.required_claims or None
         )
-
-        loo_results = {}
-
-        for doc in original_docs:
-            doc_id = doc["doc_id"]
-            modified_docs = [
-                item for item in original_docs
-                if item["doc_id"] != doc_id
-            ]
-
-            ablated = self.pipeline.execute_pipeline(
-                sample_path,
-                condition_key,
-                FaultType.NONE,
-                documents_override=modified_docs,
+        effects = {}
+        for doc in docs:
+            modified_docs = [d for d in docs if d["doc_id"] != doc["doc_id"]]
+            trace = self.pipeline.execute_pipeline(
+                sample_path, condition_key, FaultType.NONE,
+                documents_override=modified_docs, write_log=False,
             )
-
-            ablated_success = AnswerScorer.score_answer(
-                ablated.final_verdict, ablated.gold_answer
+            metrics = AnswerScorer.score_metrics(
+                trace.final_verdict, trace.gold_answer, trace.required_claims or None
             )
-
-            loo_results[doc_id] = {
-                "baseline_success": baseline_success,
-                "ablated_success": ablated_success,
-                "loo_correctness_effect": (
-                    baseline_success and not ablated_success
-                ),
-                "final_verdict": ablated.final_verdict,
+            effects[doc["doc_id"]] = {
+                "baseline_correct": baseline_metrics["correct"],
+                "intervention_correct": metrics["correct"],
+                "baseline_exact_match": baseline_metrics["exact_match"],
+                "intervention_exact_match": metrics["exact_match"],
+                "baseline_token_f1": baseline_metrics["token_f1"],
+                "intervention_token_f1": metrics["token_f1"],
+                "is_loo_correctness_effect": bool(baseline_metrics["correct"] and not metrics["correct"]),
+                "is_repair": AnswerScorer.is_repair(baseline_metrics["correct"], metrics["correct"]),
+                "final_verdict": trace.final_verdict,
             }
-
-        summary = {
-            "query_id": data["query_id"],
-            "condition": condition_key,
-            "baseline_success": baseline_success,
-            "loo_effects": loo_results,
-            "critical_item_count": sum(
-                result["loo_correctness_effect"]
-                for result in loo_results.values()
-            ),
+        repairs = sum(x["is_repair"] for x in effects.values())
+        eligible = int(not baseline_metrics["correct"])
+        return {
+            "query_id": data["query_id"], "condition": condition_key,
+            "baseline_correct": baseline_metrics["correct"],
+            "baseline_exact_match": baseline_metrics["exact_match"],
+            "baseline_token_f1": baseline_metrics["token_f1"],
+            "loo_effects": effects,
+            "loo_correctness_effect_count": sum(x["is_loo_correctness_effect"] for x in effects.values()),
+            "loo_repair_count": repairs,
+            "eligible_failed_baseline_trajectories": eligible,
+            "loo_repair_rate": (int(repairs > 0) / eligible) if eligible else None,
+            "interpretation_note": "LOO correctness effects are not by themselves a calibrated attribution-ambiguity metric.",
         }
-
-        return summary
 
 
 if __name__ == "__main__":
-    pipeline = BaselinePipeline()
-    runner = ItemLevelLOO(pipeline)
-    print(json.dumps(
-        runner.evaluate_loo("data/seed_sample.json", "A_lowC_lowP"),
-        indent=2,
-    ))
+    print(json.dumps(ItemLevelLOO.__name__))

@@ -1,8 +1,6 @@
-
 from enum import Enum
-from typing import List, Optional
-
-from pydantic import BaseModel
+from typing import List, Optional, Dict, Any
+from pydantic import BaseModel, Field
 
 
 class FaultType(str, Enum):
@@ -27,19 +25,29 @@ class SpecialistTrace(BaseModel):
     raw_output: str
 
 
-class ExecutionTrace(BaseModel):
-    query_id: str
+class DiagnosticObservation(BaseModel):
+    """Only observable runtime evidence; deliberately excludes injected labels."""
     query: str
-    gold_answer: str
-    condition: str
     original_corpus: List[ProvenanceDocument]
     specialist_traces: List[SpecialistTrace]
     final_verdict: str
 
-    # These two fields are for evaluator/reporting purposes.
-    # Never pass this full object to diagnose_fault_layer().
-    injected_fault_layer: FaultType
-    predicted_fault_layer: Optional[FaultType] = None
 
+class ExecutionTrace(BaseModel):
+    query_id: str
+    query: str
+    gold_answer: str
+    required_claims: List[Dict[str, Any]] = Field(default_factory=list)
+    condition: str
+    original_corpus: List[ProvenanceDocument]
+    specialist_traces: List[SpecialistTrace]
+    final_verdict: str
+    injected_fault_layer: FaultType  # Evaluator-only ground truth; never passed to diagnosis.
+    predicted_fault_layer: Optional[FaultType] = None
     is_failed_trajectory: bool = False
     is_repaired: bool = False
+    # None means the runtime did not measure this value; never substitute estimates.
+    prompt_tokens_measured: Optional[int] = None
+    generated_tokens_measured: Optional[int] = None
+    model_calls_measured: Optional[int] = None
+    model_id: Optional[str] = None

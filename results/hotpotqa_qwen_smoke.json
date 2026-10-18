@@ -1,0 +1,53 @@
+{
+  "experiment": "hotpotqa_local_qwen_smoke",
+  "dataset_file": "data\\raw\\hotpot_dev_distractor_v1.json",
+  "dataset_total_examples": 7405,
+  "valid_examples": 7405,
+  "evaluated_examples": 3,
+  "elapsed_seconds_measured": 77.381,
+  "exact_match_rate": 0.0,
+  "mean_token_f1": 0.0,
+  "rows": [
+    {
+      "query_id": "5a8b57f25542995d1e6f1371",
+      "question": "Were Scott Derrickson and Ed Wood of the same nationality?",
+      "gold_answer": "yes",
+      "prediction": "No",
+      "exact_match": false,
+      "token_f1": 0.0,
+      "scorer_correct_at_f1_0_5": false,
+      "prompt_tokens_measured": 1284,
+      "generated_tokens_measured": 2,
+      "model_id": "Qwen/Qwen2.5-7B-Instruct"
+    },
+    {
+      "query_id": "5a8c7595554299585d9e36b6",
+      "question": "What government position was held by the woman who portrayed Corliss Archer in the film Kiss and Tell?",
+      "gold_answer": "Chief of Protocol",
+      "prediction": "Lord High Treasurer",
+      "exact_match": false,
+      "token_f1": 0.0,
+      "scorer_correct_at_f1_0_5": false,
+      "prompt_tokens_measured": 1429,
+      "generated_tokens_measured": 4,
+      "model_id": "Qwen/Qwen2.5-7B-Instruct"
+    },
+    {
+      "query_id": "5a85ea095542994775f606a8",
+      "question": "What science fantasy young adult series, told in first person, has a set of companion books narrating the stories of enslaved worlds and alien species?",
+      "gold_answer": "Animorphs",
+      "prediction": "The Hork-Bajir Chronicles",
+      "exact_match": false,
+      "token_f1": 0.0,
+      "scorer_correct_at_f1_0_5": false,
+      "prompt_tokens_measured": 1641,
+      "generated_tokens_measured": 8,
+      "model_id": "Qwen/Qwen2.5-7B-Instruct"
+    }
+  ],
+  "limitations": [
+    "Smoke test only; tiny non-random sample, not a research result.",
+    "The full context is supplied; this does not test retrieval quality.",
+    "Token counts are reported only from the model wrapper's tokenizer measurements."
+  ]
+}

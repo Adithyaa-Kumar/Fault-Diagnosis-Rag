@@ -1,29 +1,14 @@
-
 import json
-from collections import Counter
 from pathlib import Path
-from typing import Any
-
-from src.pipeline.agent_runner import BaselinePipeline
-from src.attribution.loo import ItemLevelLOO
+from typing import Any, Dict, List
 from src.attribution.cluster_ablation import ClusterAblation
-from src.schema import FaultType
+from src.attribution.loo import ItemLevelLOO
 from src.evaluation.scoring import AnswerScorer
+from src.pipeline.agent_runner import BaselinePipeline
+from src.schema import FaultType
 
-
-CONDITIONS = [
-    "A_lowC_lowP",
-    "B_highC_lowP",
-    "C_lowC_highP",
-    "D_highC_highP",
-]
-
-FAULT_TYPES = [
-    FaultType.NONE,
-    FaultType.RETRIEVAL,
-    FaultType.SPECIALIST,
-    FaultType.ARBITER,
-]
+CONDITIONS = ["A_lowC_lowP", "B_highC_lowP", "C_lowC_highP", "D_highC_highP"]
+FAULT_TYPES = [FaultType.NONE, FaultType.RETRIEVAL, FaultType.SPECIALIST, FaultType.ARBITER]
 
 
 class PilotEvaluator:
@@ -33,124 +18,85 @@ class PilotEvaluator:
         self.loo_runner = ItemLevelLOO(self.pipeline)
         self.cluster_runner = ClusterAblation(self.pipeline)
 
-    def execute_full_pilot(self) -> dict[str, Any]:
-        rows = []
-        confusion = Counter()
-        condition_diagnosis = Counter()
-
+    def run_factorial_pilot(self) -> Dict[str, Any]:
+        results: List[Dict[str, Any]] = []
         for condition in CONDITIONS:
             for fault_type in FAULT_TYPES:
-                trace = self.pipeline.execute_pipeline(
-                    self.sample_path, condition, fault_type
-                )
-
-                answer_correct = AnswerScorer.score_answer(
-                    trace.final_verdict, trace.gold_answer
-                )
-
+                trace = self.pipeline.execute_pipeline(self.sample_path, condition, fault_type)
+                success = AnswerScorer.score_answer(trace.final_verdict, trace.gold_answer, trace.required_claims)
                 predicted = trace.predicted_fault_layer
-                actual = trace.injected_fault_layer
-                diagnosis_correct = predicted == actual
-
-                confusion[(actual.value, predicted.value)] += 1
-                condition_diagnosis[
-                    (condition, actual.value, diagnosis_correct)
-                ] += 1
-
-                rows.append({
+                results.append({
                     "query_id": trace.query_id,
                     "condition": condition,
-                    "injected_fault_layer": actual.value,
-                    "predicted_fault_layer": predicted.value,
-                    "diagnosis_correct": diagnosis_correct,
-                    "answer_correct": answer_correct,
-                    "is_failed_trajectory": not answer_correct,
+                    "injected_fault_layer": fault_type.value,
+                    "predicted_fault_layer": predicted.value if predicted else None,
+                    "diagnosis_correct": bool(predicted == fault_type),
+                    "answer_correct": success,
+                    "trajectory_failed": not success,
                     "final_verdict": trace.final_verdict,
                 })
 
-        total = len(rows)
-        correct_diagnoses = sum(
-            row["diagnosis_correct"] for row in rows
-        )
-
-        # Attribution analyses are run separately on the no-fault
-        # baseline for each experimental condition.
-        attribution_results = {}
-
+        # LOO and cluster ablation are run on the no-fault baseline for each condition.
+        attribution = []
         for condition in CONDITIONS:
-            loo = self.loo_runner.evaluate_loo(
-                self.sample_path, condition
-            )
-            cluster = self.cluster_runner.evaluate_cluster_ablation(
-                self.sample_path, condition
-            )
+            loo = self.loo_runner.evaluate_loo(self.sample_path, condition)
+            cluster = self.cluster_runner.evaluate_cluster_ablation(self.sample_path, condition)
+            attribution.append({
+                "condition": condition,
+                "loo_correctness_effect_count": loo["loo_correctness_effect_count"],
+                "loo_effects": loo["loo_effects"],
+                "cluster_ablation_correctness_effect_count": sum(
+                    x["is_cluster_ablation_correctness_effect"]
+                    for x in cluster["cluster_ablation_effects"].values()
+                ),
+                "cluster_ablation_repair_rate": cluster["cluster_ablation_repair_rate"],
+                "eligible_failed_baseline_trajectories": cluster["eligible_failed_baseline_trajectories"],
+                "cluster_ablation_effects": cluster["cluster_ablation_effects"],
+            })
 
-            attribution_results[condition] = {
-                "loo": loo,
-                "cluster_ablation": cluster,
-            }
-
-        fault_labels = [fault.value for fault in FAULT_TYPES]
-        confusion_matrix = {
-            actual: {
-                predicted: confusion[(actual, predicted)]
-                for predicted in fault_labels
-            }
-            for actual in fault_labels
+        confusion: Dict[str, Dict[str, int]] = {
+            actual.value: {pred.value: 0 for pred in FAULT_TYPES} for actual in FAULT_TYPES
         }
-
-        report = {
-            "pilot_type": "deterministic_mock_pipeline",
-            "expected_condition_fault_combinations": 16,
-            "executed_condition_fault_combinations": total,
-            "complete_factorial_coverage": total == 16,
-            "total_trajectories": total,
-            "failed_trajectories": sum(
-                row["is_failed_trajectory"] for row in rows
-            ),
-            "diagnosis_correct_count": correct_diagnoses,
-            "diagnosis_accuracy": (
-                correct_diagnoses / total if total else None
-            ),
-            "confusion_matrix": confusion_matrix,
-            "runs": rows,
-            "attribution_results": attribution_results,
-            "token_usage": None,
-            "api_cost": None,
-            "limitations": [
-                "Deterministic mock pipeline; not real LLM evaluation.",
-                "One synthetic query; no statistical generalization.",
-                "LOO and cluster-ablation effects are correctness effects, "
-                "not validated causal attribution ambiguity.",
-                "Cluster repair rate is not measured by ordinary ablation.",
-            ],
+        for row in results:
+            confusion[row["injected_fault_layer"]][row["predicted_fault_layer"]] += 1
+        diagnosis_accuracy = sum(r["diagnosis_correct"] for r in results) / len(results) if results else 0.0
+        summary = {
+            "status": "PHASE0_PILOT_EXECUTED_NOT_AUTOMATICALLY_APPROVED",
+            "conditions": CONDITIONS,
+            "fault_types": [f.value for f in FAULT_TYPES],
+            "expected_factorial_combinations": len(CONDITIONS) * len(FAULT_TYPES),
+            "observed_factorial_combinations": len(results),
+            "factorial_complete": len(results) == len(CONDITIONS) * len(FAULT_TYPES),
+            "mock_heuristic_diagnosis_accuracy": diagnosis_accuracy,
+            "diagnosis_confusion_matrix": confusion,
+            "factorial_results": results,
+            "attribution_results": attribution,
+            "cost_reporting": "Mock pipeline executions only. Token usage and API cost were not measured and are not reported.",
+            "metric_caution": "LOO and cluster-ablation values are correctness effects, not validated ambiguity estimates. Repair rate is N/A when the no-fault baseline has no eligible failures.",
         }
+        out = Path("logs") / "pilot_summary.json"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+        self._print_summary(summary)
+        print(f"\nDetailed summary written to: {out}")
+        return summary
 
-        Path("logs").mkdir(exist_ok=True)
-        Path("logs/pilot_summary.json").write_text(
-            json.dumps(report, indent=2),
-            encoding="utf-8",
-        )
+    @staticmethod
+    def _print_summary(summary: Dict[str, Any]) -> None:
+        print("\nPHASE 0 FACTORIAL PILOT")
+        print("Condition          Fault       Predicted    Answer  Diagnosis")
+        print("-" * 68)
+        for row in summary["factorial_results"]:
+            print(f"{row['condition']:<19} {row['injected_fault_layer']:<11} {str(row['predicted_fault_layer']):<12} {str(row['answer_correct']):<7} {str(row['diagnosis_correct'])}")
+        print("-" * 68)
+        print(f"Factorial combinations: {summary['observed_factorial_combinations']}/{summary['expected_factorial_combinations']}")
+        print(f"Mock heuristic diagnosis accuracy (NOT a research result): {summary['mock_heuristic_diagnosis_accuracy']:.1%}")
+        print("Token/API costs: NOT REPORTED (not measured)")
 
-        print("\nPHASE 0 PILOT SUMMARY")
-        print("=" * 76)
-        print(f"Condition/fault combinations: {total}/16")
-        print(f"Failed trajectories: {report['failed_trajectories']}")
-        print(
-            "Fault diagnosis accuracy: "
-            f"{correct_diagnoses}/{total} "
-            f"({report['diagnosis_accuracy']:.1%})"
-            if total else "Fault diagnosis accuracy: N/A"
-        )
-        print("\nConfusion matrix:")
-        print(json.dumps(confusion_matrix, indent=2))
-        print("\nReport written to logs/pilot_summary.json")
-        print("Token usage and API cost: NOT MEASURED")
-        print("=" * 76)
-
-        return report
+    # Backwards-compatible entry point used by previous instructions.
+    def execute_full_pilot(self) -> None:
+        self.run_factorial_pilot()
 
 
 if __name__ == "__main__":
-    evaluator = PilotEvaluator("data/seed_sample.json")
-    evaluator.execute_full_pilot()
+    PilotEvaluator("data/seed_sample.json").execute_full_pilot()

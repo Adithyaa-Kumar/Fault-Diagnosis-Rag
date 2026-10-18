@@ -1,0 +1,5 @@
+# Install only if these are not already present in the project's working venv.
+torch>=2.6.0
+transformers>=4.45.0
+accelerate>=1.0.0
+bitsandbytes>=0.45.0

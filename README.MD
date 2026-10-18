@@ -1,29 +1,31 @@
-# Research Charter: Fault-Layer Diagnosis in Parallel Fan-In RAG
+# Dependence-Aware Fault Diagnosis in Parallel RAG — Phase 0
 
-## Working Title
-Evaluating Dependence-Aware Counterfactual Interventions for Fault-Layer Diagnosis in Parallel Fan-In Multi-Agent RAG
+This repository contains (1) a deterministic controlled fixture for testing the 4-condition × 4-fault engineering design and interventions, and (2) local Qwen integration code plus a HotpotQA smoke test.
 
-## Core Objective
-Determine whether evidence redundancy ($C$) and provenance dependence ($P$) make fault-layer diagnosis less identifiable in parallel fan-in multi-agent RAG, and test whether cluster-level counterfactual interventions improve diagnosis over item-level attribution at an acceptable computational cost.
+## Important dataset distinction
 
-## Target Architecture
-Parallel Fan-In Multi-Agent RAG:
-- 1 Query Routing / Retrieval Layer
-- 3 Independent Specialist Agents (processing split context windows)
-- 1 Arbiter Agent (synthesizing specialist outputs into final verdict)
+- `data/seed_sample.json` is **fictional and synthetic**. It is only for pipeline plumbing, controlled fault injection, and factorial coverage. Its source clusters are assigned experimental labels, not verified provenance.
+- `data/raw/hotpot_dev_distractor_v1.json` should contain the real HotpotQA dev distractor file for the real-model smoke test. The dataset itself is not redistributed in this archive. Keep raw benchmark data unmodified.
+- The 3-example HotpotQA smoke run is not a benchmark result and does not evaluate retrieval, because it supplies the provided context directly.
 
-## Experimental Variables
-- **Independent Variables:** 
-  - Content Redundancy ($C$: Low vs. High)
-  - Provenance Dependence ($P$: Low vs. High)
-- **Fault Injections ($F$):**
-  - Retrieval Fault ($F_{ret}$)
-  - Specialist Reasoning Fault ($F_{spec}$)
-  - Arbiter Policy Fault ($F_{arb}$)
-- **Dependent Variables:** 
-  - Total Trajectories
-  - Failed Trajectories
-  - LOO-Ambiguity Rate
-  - Cluster-Ablation Repair Rate
-  - Fault-Layer Diagnosis Accuracy (%)
-  - Token & API Call Cost
+## Commands
+
+Activate the existing virtual environment, then run from the repository root:
+
+```powershell
+python -m src.evaluation.validate_dataset
+python -m pytest -q
+python -m src.evaluation.run_pilot
+python -m src.evaluation.hotpotqa_runner
+python scripts/run_qwen_factorial.py
+```
+
+The last two commands load Qwen locally and require the existing CUDA/Transformers/bitsandbytes setup. The factorial run performs 16 controlled real-model executions (4 content/provenance conditions × 4 fault settings) and may take several minutes on a 6 GB GPU.
+
+## Interpretation
+
+- `AnswerScorer` is shared by baseline evaluation, item-level LOO, cluster ablation, and the Qwen pipeline.
+- A repair requires a failed baseline and a correct post-intervention answer. Ordinary ablation correctness effects are not automatically repairs.
+- The diagnosis function receives observation-only trace data; injected labels are attached to the evaluator trace only after diagnosis. The evaluator then scores predicted labels against injected labels.
+- Token counts and runtime are reported only when measured. No API cost or token estimates are fabricated.
+- The synthetic pilot can verify code paths; it cannot establish the research hypothesis or support a claim about real-world source lineage.
