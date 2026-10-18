@@ -1,0 +1,54 @@
+# Phase 0 Balanced Experimental Design Preflight
+
+- Samples: 30
+- Document totals by condition: `{"A_lowC_lowP": 84, "B_highC_lowP": 168, "C_lowC_highP": 84, "D_highC_highP": 168}`
+- Counts equal within every sample: `False`
+- Counts equal globally: `False`
+- Source-evidence count constant: `False`
+- Candidate v2 bundle created: `No`
+
+## Structural issues
+
+- mh_0174: document counts differ across conditions: {'A_lowC_lowP': 3, 'B_highC_lowP': 6, 'C_lowC_highP': 3, 'D_highC_highP': 6}
+- mh_0533: document counts differ across conditions: {'A_lowC_lowP': 2, 'B_highC_lowP': 4, 'C_lowC_highP': 2, 'D_highC_highP': 4}
+- mh_0639: document counts differ across conditions: {'A_lowC_lowP': 2, 'B_highC_lowP': 4, 'C_lowC_highP': 2, 'D_highC_highP': 4}
+- mh_0791: document counts differ across conditions: {'A_lowC_lowP': 2, 'B_highC_lowP': 4, 'C_lowC_highP': 2, 'D_highC_highP': 4}
+- mh_0836: document counts differ across conditions: {'A_lowC_lowP': 2, 'B_highC_lowP': 4, 'C_lowC_highP': 2, 'D_highC_highP': 4}
+- mh_1651: document counts differ across conditions: {'A_lowC_lowP': 3, 'B_highC_lowP': 6, 'C_lowC_highP': 3, 'D_highC_highP': 6}
+- mh_1755: document counts differ across conditions: {'A_lowC_lowP': 3, 'B_highC_lowP': 6, 'C_lowC_highP': 3, 'D_highC_highP': 6}
+- mh_1893: document counts differ across conditions: {'A_lowC_lowP': 3, 'B_highC_lowP': 6, 'C_lowC_highP': 3, 'D_highC_highP': 6}
+- mh_2211: document counts differ across conditions: {'A_lowC_lowP': 2, 'B_highC_lowP': 4, 'C_lowC_highP': 2, 'D_highC_highP': 4}
+- mh_2543: document counts differ across conditions: {'A_lowC_lowP': 2, 'B_highC_lowP': 4, 'C_lowC_highP': 2, 'D_highC_highP': 4}
+- mh_0210: document counts differ across conditions: {'A_lowC_lowP': 4, 'B_highC_lowP': 8, 'C_lowC_highP': 4, 'D_highC_highP': 8}
+- mh_0389: document counts differ across conditions: {'A_lowC_lowP': 4, 'B_highC_lowP': 8, 'C_lowC_highP': 4, 'D_highC_highP': 8}
+- mh_0669: document counts differ across conditions: {'A_lowC_lowP': 3, 'B_highC_lowP': 6, 'C_lowC_highP': 3, 'D_highC_highP': 6}
+- mh_1101: document counts differ across conditions: {'A_lowC_lowP': 4, 'B_highC_lowP': 8, 'C_lowC_highP': 4, 'D_highC_highP': 8}
+- mh_1480: document counts differ across conditions: {'A_lowC_lowP': 3, 'B_highC_lowP': 6, 'C_lowC_highP': 3, 'D_highC_highP': 6}
+- mh_1625: document counts differ across conditions: {'A_lowC_lowP': 4, 'B_highC_lowP': 8, 'C_lowC_highP': 4, 'D_highC_highP': 8}
+- mh_1756: document counts differ across conditions: {'A_lowC_lowP': 4, 'B_highC_lowP': 8, 'C_lowC_highP': 4, 'D_highC_highP': 8}
+- mh_2496: document counts differ across conditions: {'A_lowC_lowP': 2, 'B_highC_lowP': 4, 'C_lowC_highP': 2, 'D_highC_highP': 4}
+- mh_2505: document counts differ across conditions: {'A_lowC_lowP': 4, 'B_highC_lowP': 8, 'C_lowC_highP': 4, 'D_highC_highP': 8}
+- mh_2539: document counts differ across conditions: {'A_lowC_lowP': 2, 'B_highC_lowP': 4, 'C_lowC_highP': 2, 'D_highC_highP': 4}
+- mh_0232: document counts differ across conditions: {'A_lowC_lowP': 2, 'B_highC_lowP': 4, 'C_lowC_highP': 2, 'D_highC_highP': 4}
+- mh_0373: document counts differ across conditions: {'A_lowC_lowP': 2, 'B_highC_lowP': 4, 'C_lowC_highP': 2, 'D_highC_highP': 4}
+- mh_0567: document counts differ across conditions: {'A_lowC_lowP': 3, 'B_highC_lowP': 6, 'C_lowC_highP': 3, 'D_highC_highP': 6}
+- mh_0620: document counts differ across conditions: {'A_lowC_lowP': 3, 'B_highC_lowP': 6, 'C_lowC_highP': 3, 'D_highC_highP': 6}
+- mh_0982: document counts differ across conditions: {'A_lowC_lowP': 3, 'B_highC_lowP': 6, 'C_lowC_highP': 3, 'D_highC_highP': 6}
+- mh_1017: document counts differ across conditions: {'A_lowC_lowP': 3, 'B_highC_lowP': 6, 'C_lowC_highP': 3, 'D_highC_highP': 6}
+- mh_1089: document counts differ across conditions: {'A_lowC_lowP': 3, 'B_highC_lowP': 6, 'C_lowC_highP': 3, 'D_highC_highP': 6}
+- mh_2247: document counts differ across conditions: {'A_lowC_lowP': 2, 'B_highC_lowP': 4, 'C_lowC_highP': 2, 'D_highC_highP': 4}
+- mh_2281: document counts differ across conditions: {'A_lowC_lowP': 2, 'B_highC_lowP': 4, 'C_lowC_highP': 2, 'D_highC_highP': 4}
+- mh_2474: document counts differ across conditions: {'A_lowC_lowP': 3, 'B_highC_lowP': 6, 'C_lowC_highP': 3, 'D_highC_highP': 6}
+
+## Required safeguards
+
+- This audit does not verify article contents, claim support, or gold-answer validity.
+- Current lineage IDs are synthetic; original provenance is unknown.
+- Do not equalize counts by blindly duplicating documents: that would change the redundancy manipulation.
+- A defensible balanced factorial needs source-grounded distinct passages for low redundancy and repeated/overlapping evidence for high redundancy, with equal document counts and equivalent claim coverage in all four cells.
+- Describe provenance dependence as a synthetic intervention unless real source lineage is verified.
+- Gold-answer concerns for mh_0174, mh_0533, and mh_0639 remain unresolved pending full-source review.
+
+## Gate decision
+
+**NOT CLEARED.** This is intentional: arbitrary duplicate padding would invalidate the low-redundancy condition, and fabricated paraphrases would not be source-grounded.
