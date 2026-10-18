@@ -1,0 +1,321 @@
+{
+  "schema_version": 1,
+  "experiment": "real_multihop_qwen_single_question_interventions",
+  "dataset": "MultiHop-RAG",
+  "bundle_artifact_type": "controlled_synthetic_lineage_intervention",
+  "bundle_sha256": "0ff390f9082d54d699a5f9a8d417715d6122799697908f0f2f12789a112fc4a6",
+  "sample_id": "mh_0174",
+  "condition": "A_lowC_lowP",
+  "gold_answer": "Yes",
+  "model_id": "Qwen/Qwen2.5-7B-Instruct",
+  "run_timestamp_utc": "2026-10-18T10:42:16.951222+00:00",
+  "limitations": [
+    "Single-question feasibility run; not a research result or statistical estimate.",
+    "The bundle assigns synthetic lineage IDs; provenance dependence is not verified.",
+    "High-redundancy conditions currently contain twice as many documents as low-redundancy conditions; redundancy is confounded with document count.",
+    "Evidence-unit removal targets a controlled duplicate family, not a verified real-world provenance cluster.",
+    "Raw prompts and outputs are preserved for manual review."
+  ],
+  "trials": [
+    {
+      "sample_id": "mh_0174",
+      "query": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?",
+      "gold_answer": "Yes",
+      "condition": "A_lowC_lowP",
+      "condition_design": {
+        "redundancy": "low",
+        "dependence": "low",
+        "lineage_semantics": "synthetic_distinct_parent_assignments"
+      },
+      "intervention": {
+        "kind": "baseline"
+      },
+      "input_doc_ids": [
+        "A_lowC_lowP_mh_0174_ev_00_copy0",
+        "A_lowC_lowP_mh_0174_ev_01_copy0",
+        "A_lowC_lowP_mh_0174_ev_02_copy0"
+      ],
+      "raw_final_output": "Uncertainty: The provided context does not contain any specific information about articles from Sporting News or the content of the 'NBA Rookie of the Year Odds' article. Therefore, there is insufficient evidence to answer the question.",
+      "scoring": {
+        "raw_output": "Uncertainty: The provided context does not contain any specific information about articles from Sporting News or the content of the 'NBA Rookie of the Year Odds' article. Therefore, there is insufficient evidence to answer the question.",
+        "extracted_answer": "Uncertainty: The provided context does not contain any specific information about articles from Sporting News or the content of the 'NBA Rookie of the Year Odds' article.",
+        "gold_answer": "Yes",
+        "correct": false,
+        "exact_match": false,
+        "token_f1": 0.0,
+        "scoring_mode": "hotpotqa_em_f1"
+      },
+      "stage_records": [
+        {
+          "stage": "specialist_1",
+          "input_doc_ids": [
+            "A_lowC_lowP_mh_0174_ev_00_copy0"
+          ],
+          "prompt": {
+            "system_prompt": "You are a specialist in a parallel evidence-reasoning system. Use only the supplied context. Extract relevant facts. If evidence is missing, say so. Do not guess. Be concise.",
+            "context": "[A_lowC_lowP_mh_0174_ev_00_copy0] That allows sportsbooks to earn the profit built into the odds and lines without worrying about which side wins.",
+            "question": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?"
+          },
+          "raw_output": "The provided context does not contain any specific information about articles from Sporting News or the 'NBA Rookie of the Year Odds' article. Therefore, I cannot confirm or deny the statements regarding Sportsbooks adjusting odds and lines based on the given context.",
+          "prompt_tokens_measured": 153,
+          "generated_tokens_measured": 50,
+          "latency_seconds_measured": 3.993849099962972
+        },
+        {
+          "stage": "specialist_2",
+          "input_doc_ids": [
+            "A_lowC_lowP_mh_0174_ev_01_copy0"
+          ],
+          "prompt": {
+            "system_prompt": "You are a specialist in a parallel evidence-reasoning system. Use only the supplied context. Extract relevant facts. If evidence is missing, say so. Do not guess. Be concise.",
+            "context": "[A_lowC_lowP_mh_0174_ev_01_copy0] If a significant amount of money is being placed on one team or participant, sportsbooks might adjust the odds to balance their liability.",
+            "question": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?"
+          },
+          "raw_output": "The provided context does not contain any specific articles or details about the content of the articles from Sporting News on 'Line Shopping in Sports Betting', 'Moneyline Betting', or 'NBA Rookie of the Year Odds'. Therefore, there is insufficient evidence to answer the question.",
+          "prompt_tokens_measured": 158,
+          "generated_tokens_measured": 55,
+          "latency_seconds_measured": 2.738887000014074
+        },
+        {
+          "stage": "specialist_3",
+          "input_doc_ids": [
+            "A_lowC_lowP_mh_0174_ev_02_copy0"
+          ],
+          "prompt": {
+            "system_prompt": "You are a specialist in a parallel evidence-reasoning system. Use only the supplied context. Extract relevant facts. If evidence is missing, say so. Do not guess. Be concise.",
+            "context": "[A_lowC_lowP_mh_0174_ev_02_copy0] But sportsbooks are also gathering this information, and they begin to tighten the NBA Rookie of the Year lines in response.",
+            "question": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?"
+          },
+          "raw_output": "The provided context does not contain any specific details about articles from Sporting News or the content of an 'NBA Rookie of the Year Odds' article. Therefore, no evidence can be drawn to answer the question.",
+          "prompt_tokens_measured": 156,
+          "generated_tokens_measured": 43,
+          "latency_seconds_measured": 2.193898200057447
+        },
+        {
+          "stage": "arbiter",
+          "input_doc_ids": [
+            "A_lowC_lowP_mh_0174_ev_00_copy0",
+            "A_lowC_lowP_mh_0174_ev_01_copy0",
+            "A_lowC_lowP_mh_0174_ev_02_copy0"
+          ],
+          "prompt": {
+            "system_prompt": "You are the arbiter in a parallel retrieval-augmented system. Answer using only the specialist reports. Combine supported facts, do not invent missing facts, and state uncertainty when evidence is insufficient. Return a direct answer.",
+            "context": "Specialist_1 report:\nThe provided context does not contain any specific information about articles from Sporting News or the 'NBA Rookie of the Year Odds' article. Therefore, I cannot confirm or deny the statements regarding Sportsbooks adjusting odds and lines based on the given context.\n\nSpecialist_2 report:\nThe provided context does not contain any specific articles or details about the content of the articles from Sporting News on 'Line Shopping in Sports Betting', 'Moneyline Betting', or 'NBA Rookie of the Year Odds'. Therefore, there is insufficient evidence to answer the question.\n\nSpecialist_3 report:\nThe provided context does not contain any specific details about articles from Sporting News or the content of an 'NBA Rookie of the Year Odds' article. Therefore, no evidence can be drawn to answer the question.",
+            "question": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?"
+          },
+          "raw_output": "Uncertainty: The provided context does not contain any specific information about articles from Sporting News or the content of the 'NBA Rookie of the Year Odds' article. Therefore, there is insufficient evidence to answer the question.",
+          "prompt_tokens_measured": 282,
+          "generated_tokens_measured": 45,
+          "latency_seconds_measured": 2.5209905999945477
+        }
+      ],
+      "latency_seconds_end_to_end_measured": 11.467224900028668,
+      "prompt_tokens_measured": 749,
+      "generated_tokens_measured": 193,
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "baseline_correct": false,
+      "is_repair": false,
+      "correctness_changed_vs_baseline": false
+    },
+    {
+      "sample_id": "mh_0174",
+      "query": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?",
+      "gold_answer": "Yes",
+      "condition": "A_lowC_lowP",
+      "condition_design": {
+        "redundancy": "low",
+        "dependence": "low",
+        "lineage_semantics": "synthetic_distinct_parent_assignments"
+      },
+      "intervention": {
+        "kind": "item_removal",
+        "removed_doc_ids": [
+          "A_lowC_lowP_mh_0174_ev_00_copy0"
+        ]
+      },
+      "input_doc_ids": [
+        "A_lowC_lowP_mh_0174_ev_01_copy0",
+        "A_lowC_lowP_mh_0174_ev_02_copy0"
+      ],
+      "raw_final_output": "Uncertainty: The provided reports indicate there is insufficient evidence to determine whether the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, nor can it be confirmed if the 'NBA Rookie of the Year Odds' article from the same source confirms that Sportsbooks modify betting lines based on gathered information.",
+      "scoring": {
+        "raw_output": "Uncertainty: The provided reports indicate there is insufficient evidence to determine whether the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, nor can it be confirmed if the 'NBA Rookie of the Year Odds' article from the same source confirms that Sportsbooks modify betting lines based on gathered information.",
+        "extracted_answer": "Uncertainty: The provided reports indicate there is insufficient evidence to determine whether the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, nor can it be confirmed if the 'NBA Rookie of the Year Odds' article from the same source confirms that Sportsbooks modify betting lines based on gathered information.",
+        "gold_answer": "Yes",
+        "correct": false,
+        "exact_match": false,
+        "token_f1": 0.0,
+        "scoring_mode": "hotpotqa_em_f1"
+      },
+      "stage_records": [
+        {
+          "stage": "specialist_1",
+          "input_doc_ids": [
+            "A_lowC_lowP_mh_0174_ev_01_copy0"
+          ],
+          "prompt": {
+            "system_prompt": "You are a specialist in a parallel evidence-reasoning system. Use only the supplied context. Extract relevant facts. If evidence is missing, say so. Do not guess. Be concise.",
+            "context": "[A_lowC_lowP_mh_0174_ev_01_copy0] If a significant amount of money is being placed on one team or participant, sportsbooks might adjust the odds to balance their liability.",
+            "question": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?"
+          },
+          "raw_output": "The provided context does not contain any specific articles or details about the content of the articles from Sporting News on 'Line Shopping in Sports Betting', 'Moneyline Betting', or 'NBA Rookie of the Year Odds'. Therefore, there is insufficient evidence to answer the question.",
+          "prompt_tokens_measured": 158,
+          "generated_tokens_measured": 55,
+          "latency_seconds_measured": 2.767113200039603
+        },
+        {
+          "stage": "specialist_2",
+          "input_doc_ids": [
+            "A_lowC_lowP_mh_0174_ev_02_copy0"
+          ],
+          "prompt": {
+            "system_prompt": "You are a specialist in a parallel evidence-reasoning system. Use only the supplied context. Extract relevant facts. If evidence is missing, say so. Do not guess. Be concise.",
+            "context": "[A_lowC_lowP_mh_0174_ev_02_copy0] But sportsbooks are also gathering this information, and they begin to tighten the NBA Rookie of the Year lines in response.",
+            "question": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?"
+          },
+          "raw_output": "The provided context does not contain any specific details about articles from Sporting News or the content of an 'NBA Rookie of the Year Odds' article. Therefore, no evidence can be drawn to answer the question.",
+          "prompt_tokens_measured": 156,
+          "generated_tokens_measured": 43,
+          "latency_seconds_measured": 2.2396811000071466
+        },
+        {
+          "stage": "specialist_3",
+          "input_doc_ids": [],
+          "prompt": {
+            "system_prompt": "You are a specialist in a parallel evidence-reasoning system. Use only the supplied context. Extract relevant facts. If evidence is missing, say so. Do not guess. Be concise.",
+            "context": "No evidence provided.",
+            "question": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?"
+          },
+          "raw_output": "No evidence provided to answer the question.",
+          "prompt_tokens_measured": 117,
+          "generated_tokens_measured": 9,
+          "latency_seconds_measured": 0.5555402000900358
+        },
+        {
+          "stage": "arbiter",
+          "input_doc_ids": [
+            "A_lowC_lowP_mh_0174_ev_01_copy0",
+            "A_lowC_lowP_mh_0174_ev_02_copy0"
+          ],
+          "prompt": {
+            "system_prompt": "You are the arbiter in a parallel retrieval-augmented system. Answer using only the specialist reports. Combine supported facts, do not invent missing facts, and state uncertainty when evidence is insufficient. Return a direct answer.",
+            "context": "Specialist_1 report:\nThe provided context does not contain any specific articles or details about the content of the articles from Sporting News on 'Line Shopping in Sports Betting', 'Moneyline Betting', or 'NBA Rookie of the Year Odds'. Therefore, there is insufficient evidence to answer the question.\n\nSpecialist_2 report:\nThe provided context does not contain any specific details about articles from Sporting News or the content of an 'NBA Rookie of the Year Odds' article. Therefore, no evidence can be drawn to answer the question.\n\nSpecialist_3 report:\nNo evidence provided to answer the question.",
+            "question": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?"
+          },
+          "raw_output": "Uncertainty: The provided reports indicate there is insufficient evidence to determine whether the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, nor can it be confirmed if the 'NBA Rookie of the Year Odds' article from the same source confirms that Sportsbooks modify betting lines based on gathered information.",
+          "prompt_tokens_measured": 241,
+          "generated_tokens_measured": 75,
+          "latency_seconds_measured": 3.641630499972962
+        }
+      ],
+      "latency_seconds_end_to_end_measured": 9.20423750008922,
+      "prompt_tokens_measured": 672,
+      "generated_tokens_measured": 182,
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "baseline_correct": false,
+      "is_repair": false,
+      "correctness_changed_vs_baseline": false
+    },
+    {
+      "sample_id": "mh_0174",
+      "query": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?",
+      "gold_answer": "Yes",
+      "condition": "A_lowC_lowP",
+      "condition_design": {
+        "redundancy": "low",
+        "dependence": "low",
+        "lineage_semantics": "synthetic_distinct_parent_assignments"
+      },
+      "intervention": {
+        "kind": "evidence_unit_removal",
+        "removed_evidence_unit_id": "mh_0174_ev_00",
+        "removed_doc_ids": [
+          "A_lowC_lowP_mh_0174_ev_00_copy0"
+        ],
+        "interpretation": "controlled evidence-unit family; not verified real-world provenance"
+      },
+      "input_doc_ids": [
+        "A_lowC_lowP_mh_0174_ev_01_copy0",
+        "A_lowC_lowP_mh_0174_ev_02_copy0"
+      ],
+      "raw_final_output": "Uncertainty: The provided reports indicate there is insufficient evidence to determine whether the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, nor can it be confirmed if the 'NBA Rookie of the Year Odds' article from the same source confirms that Sportsbooks modify betting lines based on gathered information.",
+      "scoring": {
+        "raw_output": "Uncertainty: The provided reports indicate there is insufficient evidence to determine whether the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, nor can it be confirmed if the 'NBA Rookie of the Year Odds' article from the same source confirms that Sportsbooks modify betting lines based on gathered information.",
+        "extracted_answer": "Uncertainty: The provided reports indicate there is insufficient evidence to determine whether the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, nor can it be confirmed if the 'NBA Rookie of the Year Odds' article from the same source confirms that Sportsbooks modify betting lines based on gathered information.",
+        "gold_answer": "Yes",
+        "correct": false,
+        "exact_match": false,
+        "token_f1": 0.0,
+        "scoring_mode": "hotpotqa_em_f1"
+      },
+      "stage_records": [
+        {
+          "stage": "specialist_1",
+          "input_doc_ids": [
+            "A_lowC_lowP_mh_0174_ev_01_copy0"
+          ],
+          "prompt": {
+            "system_prompt": "You are a specialist in a parallel evidence-reasoning system. Use only the supplied context. Extract relevant facts. If evidence is missing, say so. Do not guess. Be concise.",
+            "context": "[A_lowC_lowP_mh_0174_ev_01_copy0] If a significant amount of money is being placed on one team or participant, sportsbooks might adjust the odds to balance their liability.",
+            "question": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?"
+          },
+          "raw_output": "The provided context does not contain any specific articles or details about the content of the articles from Sporting News on 'Line Shopping in Sports Betting', 'Moneyline Betting', or 'NBA Rookie of the Year Odds'. Therefore, there is insufficient evidence to answer the question.",
+          "prompt_tokens_measured": 158,
+          "generated_tokens_measured": 55,
+          "latency_seconds_measured": 2.735707600018941
+        },
+        {
+          "stage": "specialist_2",
+          "input_doc_ids": [
+            "A_lowC_lowP_mh_0174_ev_02_copy0"
+          ],
+          "prompt": {
+            "system_prompt": "You are a specialist in a parallel evidence-reasoning system. Use only the supplied context. Extract relevant facts. If evidence is missing, say so. Do not guess. Be concise.",
+            "context": "[A_lowC_lowP_mh_0174_ev_02_copy0] But sportsbooks are also gathering this information, and they begin to tighten the NBA Rookie of the Year lines in response.",
+            "question": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?"
+          },
+          "raw_output": "The provided context does not contain any specific details about articles from Sporting News or the content of an 'NBA Rookie of the Year Odds' article. Therefore, no evidence can be drawn to answer the question.",
+          "prompt_tokens_measured": 156,
+          "generated_tokens_measured": 43,
+          "latency_seconds_measured": 2.2414043999742717
+        },
+        {
+          "stage": "specialist_3",
+          "input_doc_ids": [],
+          "prompt": {
+            "system_prompt": "You are a specialist in a parallel evidence-reasoning system. Use only the supplied context. Extract relevant facts. If evidence is missing, say so. Do not guess. Be concise.",
+            "context": "No evidence provided.",
+            "question": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?"
+          },
+          "raw_output": "No evidence provided to answer the question.",
+          "prompt_tokens_measured": 117,
+          "generated_tokens_measured": 9,
+          "latency_seconds_measured": 0.5774961999850348
+        },
+        {
+          "stage": "arbiter",
+          "input_doc_ids": [
+            "A_lowC_lowP_mh_0174_ev_01_copy0",
+            "A_lowC_lowP_mh_0174_ev_02_copy0"
+          ],
+          "prompt": {
+            "system_prompt": "You are the arbiter in a parallel retrieval-augmented system. Answer using only the specialist reports. Combine supported facts, do not invent missing facts, and state uncertainty when evidence is insufficient. Return a direct answer.",
+            "context": "Specialist_1 report:\nThe provided context does not contain any specific articles or details about the content of the articles from Sporting News on 'Line Shopping in Sports Betting', 'Moneyline Betting', or 'NBA Rookie of the Year Odds'. Therefore, there is insufficient evidence to answer the question.\n\nSpecialist_2 report:\nThe provided context does not contain any specific details about articles from Sporting News or the content of an 'NBA Rookie of the Year Odds' article. Therefore, no evidence can be drawn to answer the question.\n\nSpecialist_3 report:\nNo evidence provided to answer the question.",
+            "question": "Do the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, and does the 'NBA Rookie of the Year Odds' article from the same source also confirm that Sportsbooks modify betting lines based on gathered information?"
+          },
+          "raw_output": "Uncertainty: The provided reports indicate there is insufficient evidence to determine whether the articles from Sporting News on 'Line Shopping in Sports Betting' and 'Moneyline Betting' both state that Sportsbooks adjust odds, nor can it be confirmed if the 'NBA Rookie of the Year Odds' article from the same source confirms that Sportsbooks modify betting lines based on gathered information.",
+          "prompt_tokens_measured": 241,
+          "generated_tokens_measured": 75,
+          "latency_seconds_measured": 3.673800600110553
+        }
+      ],
+      "latency_seconds_end_to_end_measured": 9.22868339996785,
+      "prompt_tokens_measured": 672,
+      "generated_tokens_measured": 182,
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "baseline_correct": false,
+      "is_repair": false,
+      "correctness_changed_vs_baseline": false
+    }
+  ]
+}
