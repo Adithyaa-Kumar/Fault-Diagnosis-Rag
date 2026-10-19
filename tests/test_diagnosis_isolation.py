@@ -162,7 +162,36 @@ def test_injection_is_deterministic(question):
     assert a.observation.model_dump_json() == b.observation.model_dump_json()
     assert a.injection == b.injection
 
+def test_empty_specialist_context_abstains_without_model_call(question):
+    condition = "B_highC_lowP"
+    docs = question["conditions"][condition]["documents"]
+    chunks = mf.assign_chunks(docs)
 
+    # Remove all documents assigned to the first specialist.
+    excluded = [d["doc_id"] for d in chunks[0]]
+    calls = []
+
+    def tracking_generate(role, context, query):
+        calls.append((role, context))
+        return fake_generate(role, context, query)
+
+    rec = mf.execute_fault_trial(
+        question,
+        condition,
+        FaultType.NONE,
+        tracking_generate,
+        apply_injection=False,
+        exclude_doc_ids=excluded,
+    )
+
+    first = rec.observation.specialists[0]
+    assert first.input_docs == []
+    assert first.output == "Insufficient evidence: no documents provided."
+
+    # Two remaining specialists plus the arbiter; no call for the empty one.
+    assert len(calls) == 3
+    assert all("No evidence provided." not in context for _, context in calls)
+    
 REAL_OK = Path("data/processed/multihoprag/pilot_30.json").exists() and \
     Path("data/raw/multihoprag/corpus.json").exists()
 

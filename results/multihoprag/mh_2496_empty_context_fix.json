@@ -1,0 +1,974 @@
+{
+  "bundle": "data\\processed\\multihoprag\\controlled_bundles_v2.json",
+  "bundle_sha256": "790f5188757a3e6925f653aebf93550654df827cffc8ec7b0a9cc575e50dd45a",
+  "model_id": "Qwen/Qwen2.5-7B-Instruct",
+  "prompts": {
+    "version": "mh-v2-prompts-3",
+    "specialist_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+    "arbiter_prompt": "You are the arbiter in a parallel retrieval-augmented system. The reports are verbatim extracts from documents; some may be irrelevant to the question. Combine the extracts: a name given in one can identify the subject described in another. Answer using only the reports, with the best-supported answer, and do not invent facts. Use 'Insufficient evidence' only if no extract bears on the question. End with one final line. For yes/no questions use 'Answer: Yes' or 'Answer: No'. For other questions use 'Answer: <short answer>'.",
+    "max_new_tokens": {
+      "specialist": 160,
+      "arbiter": 160
+    },
+    "sha256": "d62084cb3c8a3b2cabaf7811006b796b90842223cfa96c07f01fe3d2fe5e705b"
+  },
+  "run_timestamp_utc": "2026-10-19T07:12:18.114581+00:00",
+  "schema_version": 2,
+  "experiment": "multihop_v2_interventions",
+  "sample_id": "mh_2496",
+  "condition": "B_highC_lowP",
+  "cluster_unit": "mh_2496_ev_00",
+  "gold_answer": "Richelle Cranston",
+  "baseline_eligible_for_repair": false,
+  "repair_summary": {
+    "eligible_failed_baselines": 0,
+    "interventions_tried": 5,
+    "interventions_that_repair": 0,
+    "repair_success": null,
+    "note": "None = no eligible failed baseline; repair success is undefined, not zero."
+  },
+  "trials": [
+    {
+      "sample_id": "mh_2496",
+      "condition": "B_highC_lowP",
+      "injected_layer": "none",
+      "gold_answer": "Richelle Cranston",
+      "query": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?",
+      "intervention": {
+        "kind": "baseline"
+      },
+      "input_doc_ids": [
+        "B_highC_lowP_mh_2496_ev_00_c0",
+        "B_highC_lowP_mh_2496_ev_01_c0",
+        "B_highC_lowP_mh_2496_ev_01_c1",
+        "B_highC_lowP_mh_2496_ev_00_c1"
+      ],
+      "status": "ok",
+      "error": null,
+      "raw_final_output": "Answer: Richelle Cranston",
+      "scoring": {
+        "raw_output": "Answer: Richelle Cranston",
+        "extracted_answer": "Richelle Cranston",
+        "gold_answer": "Richelle Cranston",
+        "correct": true,
+        "exact_match": true,
+        "token_f1": 1.0,
+        "scoring_mode": "hotpotqa_em_f1"
+      },
+      "answer_status": "answered",
+      "observation": {
+        "query": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?",
+        "specialists": [
+          {
+            "agent_id": "Specialist_1",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_00_c0",
+              "B_highC_lowP_mh_2496_ev_00_c1"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_00_c0",
+                "content": "Document ID: d_aeb399ce\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “I don’t think I’ve been as nervous to kick a goal in my life, to be honest,” she joked. “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs."
+              },
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_00_c1",
+                "content": "Document ID: d_ab83b874\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\n\nCranston, who was an inaugural AFLW player, will start kidney dialysis in January so had no option but to hang up the boots and focus on her treatment and health."
+              }
+            ],
+            "output": "[d_ab83b874] \"On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\""
+          },
+          {
+            "agent_id": "Specialist_2",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_01_c0"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_01_c0",
+                "content": "Document ID: d_6044283f\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: Credit: Getty Images The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nThe Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year."
+              }
+            ],
+            "output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment."
+          },
+          {
+            "agent_id": "Specialist_3",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_01_c1"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_01_c1",
+                "content": "Document ID: d_c778fdad\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: The Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year. Cranston lined up for the Bulldogs in her side’s 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+              }
+            ],
+            "output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+          }
+        ],
+        "arbiter_inputs": [
+          {
+            "agent_id": "Specialist_1",
+            "output": "[d_ab83b874] \"On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\""
+          },
+          {
+            "agent_id": "Specialist_2",
+            "output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment."
+          },
+          {
+            "agent_id": "Specialist_3",
+            "output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+          }
+        ],
+        "final_verdict": "Answer: Richelle Cranston"
+      },
+      "injection": {
+        "layer": "none",
+        "target_agent": null,
+        "transformation": "none",
+        "details": {}
+      },
+      "predicted_layer": "none",
+      "diagnosis_correct": true,
+      "stage_records": [
+        {
+          "stage": "01_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_aeb399ce\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “I don’t think I’ve been as nervous to kick a goal in my life, to be honest,” she joked. “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\n\nDocument ID: d_ab83b874\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\n\nCranston, who was an inaugural AFLW player, will start kidney dialysis in January so had no option but to hang up the boots and focus on her treatment and health.",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[d_ab83b874] \"On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\"",
+          "prompt_tokens_measured": 480,
+          "generated_tokens_measured": 68,
+          "latency_seconds_measured": 4.826646500034258,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "02_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_6044283f\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: Credit: Getty Images The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nThe Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year.",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.",
+          "prompt_tokens_measured": 307,
+          "generated_tokens_measured": 67,
+          "latency_seconds_measured": 3.449227900011465,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "03_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_c778fdad\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: The Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year. Cranston lined up for the Bulldogs in her side’s 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+          "prompt_tokens_measured": 289,
+          "generated_tokens_measured": 53,
+          "latency_seconds_measured": 2.7742289999732748,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "04_arbiter",
+          "role": "arbiter",
+          "prompt": {
+            "system_prompt": "You are the arbiter in a parallel retrieval-augmented system. The reports are verbatim extracts from documents; some may be irrelevant to the question. Combine the extracts: a name given in one can identify the subject described in another. Answer using only the reports, with the best-supported answer, and do not invent facts. Use 'Insufficient evidence' only if no extract bears on the question. End with one final line. For yes/no questions use 'Answer: Yes' or 'Answer: No'. For other questions use 'Answer: <short answer>'.",
+            "context": "Specialist_1 report:\n[d_ab83b874] \"On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\"\n\nSpecialist_2 report:\n[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nSpecialist_3 report:\n[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "Answer: Richelle Cranston",
+          "prompt_tokens_measured": 375,
+          "generated_tokens_measured": 7,
+          "latency_seconds_measured": 0.7933448000112548,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        }
+      ],
+      "prompt_tokens_measured": 1451,
+      "generated_tokens_measured": 195,
+      "model_calls_measured": 4,
+      "latency_seconds_end_to_end_measured": 11.869010200025514
+    },
+    {
+      "sample_id": "mh_2496",
+      "condition": "B_highC_lowP",
+      "injected_layer": "none",
+      "gold_answer": "Richelle Cranston",
+      "query": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?",
+      "intervention": {
+        "kind": "item_removal",
+        "removed_doc_ids": [
+          "B_highC_lowP_mh_2496_ev_00_c0"
+        ]
+      },
+      "input_doc_ids": [
+        "B_highC_lowP_mh_2496_ev_01_c0",
+        "B_highC_lowP_mh_2496_ev_01_c1",
+        "B_highC_lowP_mh_2496_ev_00_c1"
+      ],
+      "status": "ok",
+      "error": null,
+      "raw_final_output": "Insufficient evidence",
+      "scoring": {
+        "raw_output": "Insufficient evidence",
+        "extracted_answer": "",
+        "gold_answer": "Richelle Cranston",
+        "correct": false,
+        "exact_match": false,
+        "token_f1": 0.0,
+        "scoring_mode": "hotpotqa_em_f1"
+      },
+      "answer_status": "abstained",
+      "observation": {
+        "query": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?",
+        "specialists": [
+          {
+            "agent_id": "Specialist_1",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_00_c1"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_00_c1",
+                "content": "Document ID: d_ab83b874\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\n\nCranston, who was an inaugural AFLW player, will start kidney dialysis in January so had no option but to hang up the boots and focus on her treatment and health."
+              }
+            ],
+            "output": "[d_ab83b874] \"But nah, it was awesome.\" Richelle Cranston, who was an inaugural AFLW player, will start kidney dialysis in January so had no option but to hang up the boots and focus on her treatment and health."
+          },
+          {
+            "agent_id": "Specialist_2",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_01_c0"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_01_c0",
+                "content": "Document ID: d_6044283f\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: Credit: Getty Images The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nThe Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year."
+              }
+            ],
+            "output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment."
+          },
+          {
+            "agent_id": "Specialist_3",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_01_c1"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_01_c1",
+                "content": "Document ID: d_c778fdad\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: The Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year. Cranston lined up for the Bulldogs in her side’s 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+              }
+            ],
+            "output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+          }
+        ],
+        "arbiter_inputs": [
+          {
+            "agent_id": "Specialist_1",
+            "output": "[d_ab83b874] \"But nah, it was awesome.\" Richelle Cranston, who was an inaugural AFLW player, will start kidney dialysis in January so had no option but to hang up the boots and focus on her treatment and health."
+          },
+          {
+            "agent_id": "Specialist_2",
+            "output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment."
+          },
+          {
+            "agent_id": "Specialist_3",
+            "output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+          }
+        ],
+        "final_verdict": "Insufficient evidence"
+      },
+      "injection": {
+        "layer": "none",
+        "target_agent": null,
+        "transformation": "none",
+        "details": {}
+      },
+      "predicted_layer": "none",
+      "diagnosis_correct": true,
+      "stage_records": [
+        {
+          "stage": "01_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_ab83b874\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\n\nCranston, who was an inaugural AFLW player, will start kidney dialysis in January so had no option but to hang up the boots and focus on her treatment and health.",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[d_ab83b874] \"But nah, it was awesome.\" Richelle Cranston, who was an inaugural AFLW player, will start kidney dialysis in January so had no option but to hang up the boots and focus on her treatment and health.",
+          "prompt_tokens_measured": 323,
+          "generated_tokens_measured": 56,
+          "latency_seconds_measured": 2.9338044999167323,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "02_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_6044283f\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: Credit: Getty Images The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nThe Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year.",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.",
+          "prompt_tokens_measured": 307,
+          "generated_tokens_measured": 67,
+          "latency_seconds_measured": 3.4687816000077873,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "03_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_c778fdad\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: The Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year. Cranston lined up for the Bulldogs in her side’s 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+          "prompt_tokens_measured": 289,
+          "generated_tokens_measured": 53,
+          "latency_seconds_measured": 2.8219889999600127,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "04_arbiter",
+          "role": "arbiter",
+          "prompt": {
+            "system_prompt": "You are the arbiter in a parallel retrieval-augmented system. The reports are verbatim extracts from documents; some may be irrelevant to the question. Combine the extracts: a name given in one can identify the subject described in another. Answer using only the reports, with the best-supported answer, and do not invent facts. Use 'Insufficient evidence' only if no extract bears on the question. End with one final line. For yes/no questions use 'Answer: Yes' or 'Answer: No'. For other questions use 'Answer: <short answer>'.",
+            "context": "Specialist_1 report:\n[d_ab83b874] \"But nah, it was awesome.\" Richelle Cranston, who was an inaugural AFLW player, will start kidney dialysis in January so had no option but to hang up the boots and focus on her treatment and health.\n\nSpecialist_2 report:\n[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nSpecialist_3 report:\n[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "Insufficient evidence",
+          "prompt_tokens_measured": 363,
+          "generated_tokens_measured": 4,
+          "latency_seconds_measured": 0.6330087999813259,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        }
+      ],
+      "prompt_tokens_measured": 1282,
+      "generated_tokens_measured": 180,
+      "model_calls_measured": 4,
+      "latency_seconds_end_to_end_measured": 9.85804319998715,
+      "effect": {
+        "correctness_changed": true,
+        "extracted_answer_changed": true,
+        "token_f1_delta": -1.0
+      },
+      "is_repair": false
+    },
+    {
+      "sample_id": "mh_2496",
+      "condition": "B_highC_lowP",
+      "injected_layer": "none",
+      "gold_answer": "Richelle Cranston",
+      "query": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?",
+      "intervention": {
+        "kind": "item_removal",
+        "removed_doc_ids": [
+          "B_highC_lowP_mh_2496_ev_01_c0"
+        ]
+      },
+      "input_doc_ids": [
+        "B_highC_lowP_mh_2496_ev_00_c0",
+        "B_highC_lowP_mh_2496_ev_01_c1",
+        "B_highC_lowP_mh_2496_ev_00_c1"
+      ],
+      "status": "ok",
+      "error": null,
+      "raw_final_output": "Answer: Richelle Cranston",
+      "scoring": {
+        "raw_output": "Answer: Richelle Cranston",
+        "extracted_answer": "Richelle Cranston",
+        "gold_answer": "Richelle Cranston",
+        "correct": true,
+        "exact_match": true,
+        "token_f1": 1.0,
+        "scoring_mode": "hotpotqa_em_f1"
+      },
+      "answer_status": "answered",
+      "observation": {
+        "query": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?",
+        "specialists": [
+          {
+            "agent_id": "Specialist_1",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_00_c0",
+              "B_highC_lowP_mh_2496_ev_00_c1"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_00_c0",
+                "content": "Document ID: d_aeb399ce\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “I don’t think I’ve been as nervous to kick a goal in my life, to be honest,” she joked. “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs."
+              },
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_00_c1",
+                "content": "Document ID: d_ab83b874\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\n\nCranston, who was an inaugural AFLW player, will start kidney dialysis in January so had no option but to hang up the boots and focus on her treatment and health."
+              }
+            ],
+            "output": "[d_ab83b874] \"On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\""
+          },
+          {
+            "agent_id": "Specialist_2",
+            "retrieved_doc_ids": [],
+            "input_docs": [],
+            "output": "Insufficient evidence: no documents provided."
+          },
+          {
+            "agent_id": "Specialist_3",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_01_c1"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_01_c1",
+                "content": "Document ID: d_c778fdad\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: The Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year. Cranston lined up for the Bulldogs in her side’s 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+              }
+            ],
+            "output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+          }
+        ],
+        "arbiter_inputs": [
+          {
+            "agent_id": "Specialist_1",
+            "output": "[d_ab83b874] \"On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\""
+          },
+          {
+            "agent_id": "Specialist_2",
+            "output": "Insufficient evidence: no documents provided."
+          },
+          {
+            "agent_id": "Specialist_3",
+            "output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+          }
+        ],
+        "final_verdict": "Answer: Richelle Cranston"
+      },
+      "injection": {
+        "layer": "none",
+        "target_agent": null,
+        "transformation": "none",
+        "details": {}
+      },
+      "predicted_layer": "none",
+      "diagnosis_correct": true,
+      "stage_records": [
+        {
+          "stage": "01_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_aeb399ce\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “I don’t think I’ve been as nervous to kick a goal in my life, to be honest,” she joked. “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\n\nDocument ID: d_ab83b874\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\n\nCranston, who was an inaugural AFLW player, will start kidney dialysis in January so had no option but to hang up the boots and focus on her treatment and health.",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[d_ab83b874] \"On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\"",
+          "prompt_tokens_measured": 480,
+          "generated_tokens_measured": 68,
+          "latency_seconds_measured": 3.7684089000103995,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "02_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_c778fdad\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: The Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year. Cranston lined up for the Bulldogs in her side’s 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+          "prompt_tokens_measured": 289,
+          "generated_tokens_measured": 53,
+          "latency_seconds_measured": 2.7687448000069708,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "03_arbiter",
+          "role": "arbiter",
+          "prompt": {
+            "system_prompt": "You are the arbiter in a parallel retrieval-augmented system. The reports are verbatim extracts from documents; some may be irrelevant to the question. Combine the extracts: a name given in one can identify the subject described in another. Answer using only the reports, with the best-supported answer, and do not invent facts. Use 'Insufficient evidence' only if no extract bears on the question. End with one final line. For yes/no questions use 'Answer: Yes' or 'Answer: No'. For other questions use 'Answer: <short answer>'.",
+            "context": "Specialist_1 report:\n[d_ab83b874] \"On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\"\n\nSpecialist_2 report:\nInsufficient evidence: no documents provided.\n\nSpecialist_3 report:\n[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "Answer: Richelle Cranston",
+          "prompt_tokens_measured": 317,
+          "generated_tokens_measured": 7,
+          "latency_seconds_measured": 0.7473923000507057,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        }
+      ],
+      "prompt_tokens_measured": 1086,
+      "generated_tokens_measured": 128,
+      "model_calls_measured": 3,
+      "latency_seconds_end_to_end_measured": 7.285004199948162,
+      "effect": {
+        "correctness_changed": false,
+        "extracted_answer_changed": false,
+        "token_f1_delta": 0.0
+      },
+      "is_repair": false
+    },
+    {
+      "sample_id": "mh_2496",
+      "condition": "B_highC_lowP",
+      "injected_layer": "none",
+      "gold_answer": "Richelle Cranston",
+      "query": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?",
+      "intervention": {
+        "kind": "item_removal",
+        "removed_doc_ids": [
+          "B_highC_lowP_mh_2496_ev_01_c1"
+        ]
+      },
+      "input_doc_ids": [
+        "B_highC_lowP_mh_2496_ev_00_c0",
+        "B_highC_lowP_mh_2496_ev_01_c0",
+        "B_highC_lowP_mh_2496_ev_00_c1"
+      ],
+      "status": "ok",
+      "error": null,
+      "raw_final_output": "Answer: Richelle Cranston",
+      "scoring": {
+        "raw_output": "Answer: Richelle Cranston",
+        "extracted_answer": "Richelle Cranston",
+        "gold_answer": "Richelle Cranston",
+        "correct": true,
+        "exact_match": true,
+        "token_f1": 1.0,
+        "scoring_mode": "hotpotqa_em_f1"
+      },
+      "answer_status": "answered",
+      "observation": {
+        "query": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?",
+        "specialists": [
+          {
+            "agent_id": "Specialist_1",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_00_c0",
+              "B_highC_lowP_mh_2496_ev_00_c1"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_00_c0",
+                "content": "Document ID: d_aeb399ce\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “I don’t think I’ve been as nervous to kick a goal in my life, to be honest,” she joked. “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs."
+              },
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_00_c1",
+                "content": "Document ID: d_ab83b874\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\n\nCranston, who was an inaugural AFLW player, will start kidney dialysis in January so had no option but to hang up the boots and focus on her treatment and health."
+              }
+            ],
+            "output": "[d_ab83b874] \"On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\""
+          },
+          {
+            "agent_id": "Specialist_2",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_01_c0"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_01_c0",
+                "content": "Document ID: d_6044283f\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: Credit: Getty Images The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nThe Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year."
+              }
+            ],
+            "output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment."
+          },
+          {
+            "agent_id": "Specialist_3",
+            "retrieved_doc_ids": [],
+            "input_docs": [],
+            "output": "Insufficient evidence: no documents provided."
+          }
+        ],
+        "arbiter_inputs": [
+          {
+            "agent_id": "Specialist_1",
+            "output": "[d_ab83b874] \"On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\""
+          },
+          {
+            "agent_id": "Specialist_2",
+            "output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment."
+          },
+          {
+            "agent_id": "Specialist_3",
+            "output": "Insufficient evidence: no documents provided."
+          }
+        ],
+        "final_verdict": "Answer: Richelle Cranston"
+      },
+      "injection": {
+        "layer": "none",
+        "target_agent": null,
+        "transformation": "none",
+        "details": {}
+      },
+      "predicted_layer": "none",
+      "diagnosis_correct": true,
+      "stage_records": [
+        {
+          "stage": "01_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_aeb399ce\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “I don’t think I’ve been as nervous to kick a goal in my life, to be honest,” she joked. “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\n\nDocument ID: d_ab83b874\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\n\nCranston, who was an inaugural AFLW player, will start kidney dialysis in January so had no option but to hang up the boots and focus on her treatment and health.",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[d_ab83b874] \"On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\"",
+          "prompt_tokens_measured": 480,
+          "generated_tokens_measured": 68,
+          "latency_seconds_measured": 3.7812371000181884,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "02_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_6044283f\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: Credit: Getty Images The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nThe Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year.",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.",
+          "prompt_tokens_measured": 307,
+          "generated_tokens_measured": 67,
+          "latency_seconds_measured": 3.399272400070913,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "03_arbiter",
+          "role": "arbiter",
+          "prompt": {
+            "system_prompt": "You are the arbiter in a parallel retrieval-augmented system. The reports are verbatim extracts from documents; some may be irrelevant to the question. Combine the extracts: a name given in one can identify the subject described in another. Answer using only the reports, with the best-supported answer, and do not invent facts. Use 'Insufficient evidence' only if no extract bears on the question. End with one final line. For yes/no questions use 'Answer: Yes' or 'Answer: No'. For other questions use 'Answer: <short answer>'.",
+            "context": "Specialist_1 report:\n[d_ab83b874] \"On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.\"\n\nSpecialist_2 report:\n[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nSpecialist_3 report:\nInsufficient evidence: no documents provided.",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "Answer: Richelle Cranston",
+          "prompt_tokens_measured": 331,
+          "generated_tokens_measured": 7,
+          "latency_seconds_measured": 0.7561701000668108,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        }
+      ],
+      "prompt_tokens_measured": 1118,
+      "generated_tokens_measured": 142,
+      "model_calls_measured": 3,
+      "latency_seconds_end_to_end_measured": 7.937205699970946,
+      "effect": {
+        "correctness_changed": false,
+        "extracted_answer_changed": false,
+        "token_f1_delta": 0.0
+      },
+      "is_repair": false
+    },
+    {
+      "sample_id": "mh_2496",
+      "condition": "B_highC_lowP",
+      "injected_layer": "none",
+      "gold_answer": "Richelle Cranston",
+      "query": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?",
+      "intervention": {
+        "kind": "item_removal",
+        "removed_doc_ids": [
+          "B_highC_lowP_mh_2496_ev_00_c1"
+        ]
+      },
+      "input_doc_ids": [
+        "B_highC_lowP_mh_2496_ev_00_c0",
+        "B_highC_lowP_mh_2496_ev_01_c0",
+        "B_highC_lowP_mh_2496_ev_01_c1"
+      ],
+      "status": "ok",
+      "error": null,
+      "raw_final_output": "Insufficient evidence",
+      "scoring": {
+        "raw_output": "Insufficient evidence",
+        "extracted_answer": "",
+        "gold_answer": "Richelle Cranston",
+        "correct": false,
+        "exact_match": false,
+        "token_f1": 0.0,
+        "scoring_mode": "hotpotqa_em_f1"
+      },
+      "answer_status": "abstained",
+      "observation": {
+        "query": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?",
+        "specialists": [
+          {
+            "agent_id": "Specialist_1",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_00_c0"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_00_c0",
+                "content": "Document ID: d_aeb399ce\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “I don’t think I’ve been as nervous to kick a goal in my life, to be honest,” she joked. “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs."
+              }
+            ],
+            "output": "[Document ID: d_aeb399ce] \"Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season,\""
+          },
+          {
+            "agent_id": "Specialist_2",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_01_c0"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_01_c0",
+                "content": "Document ID: d_6044283f\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: Credit: Getty Images The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nThe Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year."
+              }
+            ],
+            "output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment."
+          },
+          {
+            "agent_id": "Specialist_3",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_01_c1"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_01_c1",
+                "content": "Document ID: d_c778fdad\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: The Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year. Cranston lined up for the Bulldogs in her side’s 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+              }
+            ],
+            "output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+          }
+        ],
+        "arbiter_inputs": [
+          {
+            "agent_id": "Specialist_1",
+            "output": "[Document ID: d_aeb399ce] \"Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season,\""
+          },
+          {
+            "agent_id": "Specialist_2",
+            "output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment."
+          },
+          {
+            "agent_id": "Specialist_3",
+            "output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+          }
+        ],
+        "final_verdict": "Insufficient evidence"
+      },
+      "injection": {
+        "layer": "none",
+        "target_agent": null,
+        "transformation": "none",
+        "details": {}
+      },
+      "predicted_layer": "none",
+      "diagnosis_correct": true,
+      "stage_records": [
+        {
+          "stage": "01_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_aeb399ce\nArticle title: Ground-breaking Gold Coast: Suns make AFLW finals for a second time\nPublisher: The Age\nPublished at: 2023-11-03T23:45:04+00:00\nEvidence text: “I don’t think I’ve been as nervous to kick a goal in my life, to be honest,” she joked. “But nah, it was awesome.” On Saturday, the competition also said goodbye to a range of players including Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season, and Hawthorn’s Akec Makur Chuot, who played 40 games for three clubs.",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[Document ID: d_aeb399ce] \"Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season,\"",
+          "prompt_tokens_measured": 310,
+          "generated_tokens_measured": 35,
+          "latency_seconds_measured": 1.9998376000439748,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "02_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_6044283f\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: Credit: Getty Images The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nThe Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year.",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.",
+          "prompt_tokens_measured": 307,
+          "generated_tokens_measured": 67,
+          "latency_seconds_measured": 3.5037328999023885,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "03_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_c778fdad\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: The Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year. Cranston lined up for the Bulldogs in her side’s 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+          "prompt_tokens_measured": 289,
+          "generated_tokens_measured": 53,
+          "latency_seconds_measured": 2.8029891999904066,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "04_arbiter",
+          "role": "arbiter",
+          "prompt": {
+            "system_prompt": "You are the arbiter in a parallel retrieval-augmented system. The reports are verbatim extracts from documents; some may be irrelevant to the question. Combine the extracts: a name given in one can identify the subject described in another. Answer using only the reports, with the best-supported answer, and do not invent facts. Use 'Insufficient evidence' only if no extract bears on the question. End with one final line. For yes/no questions use 'Answer: Yes' or 'Answer: No'. For other questions use 'Answer: <short answer>'.",
+            "context": "Specialist_1 report:\n[Document ID: d_aeb399ce] \"Western Bulldogs forward Richelle Cranston, who has battled stage five chronic kidney disease while playing this season,\"\n\nSpecialist_2 report:\n[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nSpecialist_3 report:\n[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "Insufficient evidence",
+          "prompt_tokens_measured": 343,
+          "generated_tokens_measured": 4,
+          "latency_seconds_measured": 0.6286353999748826,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        }
+      ],
+      "prompt_tokens_measured": 1249,
+      "generated_tokens_measured": 159,
+      "model_calls_measured": 4,
+      "latency_seconds_end_to_end_measured": 8.935682200011797,
+      "effect": {
+        "correctness_changed": true,
+        "extracted_answer_changed": true,
+        "token_f1_delta": -1.0
+      },
+      "is_repair": false
+    },
+    {
+      "sample_id": "mh_2496",
+      "condition": "B_highC_lowP",
+      "injected_layer": "none",
+      "gold_answer": "Richelle Cranston",
+      "query": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?",
+      "intervention": {
+        "kind": "claim_family_removal",
+        "removed_evidence_unit_id": "mh_2496_ev_00",
+        "removed_doc_ids": [
+          "B_highC_lowP_mh_2496_ev_00_c0",
+          "B_highC_lowP_mh_2496_ev_00_c1"
+        ],
+        "interpretation": "controlled claim family; not verified provenance"
+      },
+      "input_doc_ids": [
+        "B_highC_lowP_mh_2496_ev_01_c0",
+        "B_highC_lowP_mh_2496_ev_01_c1"
+      ],
+      "status": "ok",
+      "error": null,
+      "raw_final_output": "Insufficient evidence",
+      "scoring": {
+        "raw_output": "Insufficient evidence",
+        "extracted_answer": "",
+        "gold_answer": "Richelle Cranston",
+        "correct": false,
+        "exact_match": false,
+        "token_f1": 0.0,
+        "scoring_mode": "hotpotqa_em_f1"
+      },
+      "answer_status": "abstained",
+      "observation": {
+        "query": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?",
+        "specialists": [
+          {
+            "agent_id": "Specialist_1",
+            "retrieved_doc_ids": [],
+            "input_docs": [],
+            "output": "Insufficient evidence: no documents provided."
+          },
+          {
+            "agent_id": "Specialist_2",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_01_c0"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_01_c0",
+                "content": "Document ID: d_6044283f\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: Credit: Getty Images The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nThe Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year."
+              }
+            ],
+            "output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment."
+          },
+          {
+            "agent_id": "Specialist_3",
+            "retrieved_doc_ids": [
+              "B_highC_lowP_mh_2496_ev_01_c1"
+            ],
+            "input_docs": [
+              {
+                "doc_id": "B_highC_lowP_mh_2496_ev_01_c1",
+                "content": "Document ID: d_c778fdad\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: The Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year. Cranston lined up for the Bulldogs in her side’s 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+              }
+            ],
+            "output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+          }
+        ],
+        "arbiter_inputs": [
+          {
+            "agent_id": "Specialist_1",
+            "output": "Insufficient evidence: no documents provided."
+          },
+          {
+            "agent_id": "Specialist_2",
+            "output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment."
+          },
+          {
+            "agent_id": "Specialist_3",
+            "output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39)."
+          }
+        ],
+        "final_verdict": "Insufficient evidence"
+      },
+      "injection": {
+        "layer": "none",
+        "target_agent": null,
+        "transformation": "none",
+        "details": {}
+      },
+      "predicted_layer": "none",
+      "diagnosis_correct": true,
+      "stage_records": [
+        {
+          "stage": "01_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_6044283f\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: Credit: Getty Images The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nThe Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year.",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.",
+          "prompt_tokens_measured": 307,
+          "generated_tokens_measured": 67,
+          "latency_seconds_measured": 3.5135910999961197,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "02_specialist",
+          "role": "specialist",
+          "prompt": {
+            "system_prompt": "You are one specialist in a parallel evidence system. You see only some of the documents; other specialists read the rest. For EACH document below, write one line starting with its Document ID in brackets, followed by the one or two sentences of its evidence text that state its main factual claim, copied verbatim. If the evidence text has several sentences, prefer those that bear on the question. Do not judge relevance, do not answer the question, and do not add comments.",
+            "context": "Document ID: d_c778fdad\nArticle title: Comeback kings Richmond take the AFLW points in Cairns\nPublisher: The Age\nPublished at: 2023-10-20T23:51:34+00:00\nEvidence text: The Dogs are Cranston’s third club after starting at Melbourne and having a stint with Geelong before heading to the Bulldogs last year. Cranston lined up for the Bulldogs in her side’s 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+          "prompt_tokens_measured": 289,
+          "generated_tokens_measured": 53,
+          "latency_seconds_measured": 2.774400499998592,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        },
+        {
+          "stage": "03_arbiter",
+          "role": "arbiter",
+          "prompt": {
+            "system_prompt": "You are the arbiter in a parallel retrieval-augmented system. The reports are verbatim extracts from documents; some may be irrelevant to the question. Combine the extracts: a name given in one can identify the subject described in another. Answer using only the reports, with the best-supported answer, and do not invent facts. Use 'Insufficient evidence' only if no extract bears on the question. End with one final line. For yes/no questions use 'Answer: Yes' or 'Answer: No'. For other questions use 'Answer: <short answer>'.",
+            "context": "Specialist_1 report:\nInsufficient evidence: no documents provided.\n\nSpecialist_2 report:\n[d_6044283f] The 34-year-old posted the caption along with a video detailing her life with the disease including weekly blood tests and daily blood pressure checks, tracking water and food intake, taking medications including resonium (to lower potassium levels), all while training in the high-performance environment.\n\nSpecialist_3 report:\n[d_c778fdad] Cranston lined up for the Bulldogs in her side's 57-point loss to Sydney on Saturday at Whitten Oval, 14.12 (96) to 6.3 (39).",
+            "question": "Which player from the Western Bulldogs, who has played for a total of three AFLW clubs and has also contended with stage five chronic kidney disease during the season, was reported on by 'The Age'?"
+          },
+          "raw_output": "Insufficient evidence",
+          "prompt_tokens_measured": 316,
+          "generated_tokens_measured": 4,
+          "latency_seconds_measured": 0.6259058000287041,
+          "model_id": "Qwen/Qwen2.5-7B-Instruct"
+        }
+      ],
+      "prompt_tokens_measured": 912,
+      "generated_tokens_measured": 124,
+      "model_calls_measured": 3,
+      "latency_seconds_end_to_end_measured": 6.914225200074725,
+      "effect": {
+        "correctness_changed": true,
+        "extracted_answer_changed": true,
+        "token_f1_delta": -1.0
+      },
+      "is_repair": false
+    }
+  ]
+}

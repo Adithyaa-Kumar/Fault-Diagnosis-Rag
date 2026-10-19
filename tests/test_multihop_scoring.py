@@ -68,3 +68,21 @@ def test_gold_checked_extraction_and_correctness(raw, gold, extracted, correct):
 def test_yes_no_uses_exact_mode_and_other_answers_keep_f1_rule():
     assert _score("Answer: Yes", "Yes")["scoring_mode"] == "multihop_yes_no_exact"
     assert _score("Answer: Sporting News and others", "Sporting News")["scoring_mode"] == "hotpotqa_em_f1"
+
+
+def test_labelled_final_answer_does_not_hide_reasoning_abstention():
+    result = score_multihop_answer(
+        "Reasoning: I cannot determine from the evidence.\nAnswer: Yes",
+        "Yes",
+    )
+    assert result["extracted_answer"] == ""
+    assert result["correct"] is False
+
+
+def test_labelled_final_answer_does_not_hide_reasoning_contradiction():
+    result = score_multihop_answer(
+        "Reasoning: Yes, but the evidence does not support the claim.\nAnswer: Yes",
+        "Yes",
+    )
+    assert result["extracted_answer"] == ""
+    assert result["correct"] is False

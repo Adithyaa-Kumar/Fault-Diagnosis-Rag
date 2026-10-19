@@ -24,21 +24,25 @@ def extract_answer(output: str) -> str:
     if not text:
         return ""
 
-    # Preserve the full response for contradiction and abstention checks.
+    # Keep the complete response for validity checks. A labelled final answer
+    # must not hide a contradiction or abstention stated in the reasoning.
+    full_text = text
     labelled = re.search(
         r"(?im)^\s*answer\s*:\s*(.+?)\s*$",
-        text,
+        full_text,
     )
-    if labelled:
-        text = labelled.group(1).strip()
+    answer_text = labelled.group(1).strip() if labelled else full_text
 
-    # An explicit abstention is never an answer, whatever the answer type.
-    if re.search(
+    abstention_pattern = (
         r"\b(insufficient evidence|insufficient information|the evidence is insufficient|"
-        r"unable to determine|not enough information|cannot determine|could not determine)\b",
-        text, flags=re.IGNORECASE,
-    ):
+        r"unable to determine|not enough information|cannot determine|could not determine)\b"
+    )
+    # An explicit abstention anywhere in the response invalidates a confident
+    # final answer; otherwise reasoning/final-answer contradictions can score as correct.
+    if re.search(abstention_pattern, full_text, flags=re.IGNORECASE):
         return ""
+
+    text = answer_text
 
     # For yes/no answers, reject explicit contradictions or abstentions.
     yes_no = re.match(
@@ -57,27 +61,11 @@ def extract_answer(output: str) -> str:
             return ""
 
         has_contradiction = any(
-            re.search(pattern, text, flags=re.IGNORECASE | re.DOTALL)
+            re.search(pattern, full_text, flags=re.IGNORECASE | re.DOTALL)
             for pattern in CONTRADICTION_PATTERNS
         )
 
-        has_abstention = bool(
-            re.search(
-                r"\b("
-                r"insufficient evidence|"
-                r"insufficient information|"
-                r"the evidence is insufficient|"
-                r"unable to determine|"
-                r"not enough information|"
-                r"cannot determine|"
-                r"could not determine"
-                r")\b",
-                text,
-                flags=re.IGNORECASE,
-            )
-        )
-
-        if has_contradiction or has_abstention:
+        if has_contradiction:
             return ""
 
         return yes_no.group(1).capitalize()

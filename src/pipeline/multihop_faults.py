@@ -196,7 +196,11 @@ def execute_fault_trial(question: dict, condition: str, layer: FaultType,
 
     outputs = []
     for chunk in actual:
-        context = "\n\n".join(render(d) for d in chunk) or "No evidence provided."
+        if not chunk:
+            outputs.append("Insufficient evidence: no documents provided.")
+            continue
+
+        context = "\n\n".join(render(d) for d in chunk)
         outputs.append(generate("specialist", context, query))
     if apply_injection and layer == FaultType.SPECIALIST:
         outputs, record = apply_specialist_fault(outputs, actual, pool, qid, condition)
