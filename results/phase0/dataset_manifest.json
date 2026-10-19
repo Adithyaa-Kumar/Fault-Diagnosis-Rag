@@ -1,0 +1,40 @@
+{
+  "captured_utc": "2026-10-19T04:42:19.435004+00:00",
+  "dataset": "MultiHop-RAG",
+  "source_hint": "https://github.com/yixuantt/MultiHop-RAG",
+  "license": null,
+  "version": null,
+  "license_version_note": "Not asserted here. Copy license and version from the dataset card you downloaded from, then re-run; null means unrecorded.",
+  "raw_files": {
+    "data/raw/multihoprag/MultiHopRAG.json": {
+      "sha256": "1938f5915a97c6f113bd5373ab52a9249154d8da2f67418e74f082d06cc9766a",
+      "bytes": 5243660
+    },
+    "data/raw/multihoprag/corpus.json": {
+      "sha256": "83f6958383d968341b40397c5922c21adca23db6ba0e8f61d6858b98064fec61",
+      "bytes": 6791049
+    }
+  },
+  "processed_files": {
+    "data/processed/multihoprag/pilot_30.json": {
+      "sha256": "db52cd44316b0865725e677c6cadd062c9d9eadc6af44dfc6aaf11ed1d275c1e",
+      "bytes": 68974
+    },
+    "data/processed/multihoprag/claim_annotations_30.json": {
+      "sha256": "fd6f2db7a96e1dbd27ff50f1fd8a67612945bc457d75f547a9361aa7c299cf8e",
+      "bytes": 82937
+    },
+    "data/processed/multihoprag/controlled_bundles_v2.json": {
+      "sha256": "9ae7fcae787fbd06729eb87452b785e8236d12bad3d382222a97e799d4acfd3a",
+      "bytes": 1386488
+    }
+  },
+  "raw_files_immutable_policy": "Raw files are never written by project code; 'verify' fails if a hash changes.",
+  "id_validation": {
+    "questions": 30,
+    "documents": 672,
+    "claims": 9,
+    "errors": [],
+    "valid": true
+  }
+}

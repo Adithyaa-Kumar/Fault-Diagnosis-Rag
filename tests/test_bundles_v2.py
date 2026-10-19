@@ -169,3 +169,17 @@ def test_fillers_are_their_own_single_document_family(tmp_path):
             assert set(sizes) == {1}
         else:
             assert set(sizes) == {2}
+
+
+def test_stale_bundle_is_rejected_with_regenerate_message(tmp_path):
+    from src.evaluation.build_bundles_v2 import assert_current_bundle
+    pp, cp, _ = make_fixture(tmp_path)
+    fresh = build_v2(pp, cp)
+    assert_current_bundle(fresh)  # current: no error
+    stale = {**fresh, "builder_version": "v2.0"}
+    with pytest.raises(SystemExit, match="Regenerate"):
+        assert_current_bundle(stale)
+    no_pool = json.loads(json.dumps(fresh))
+    del no_pool["questions"][0]["filler_pool"]
+    with pytest.raises(SystemExit, match="Regenerate"):
+        assert_current_bundle(no_pool)

@@ -11,7 +11,7 @@ import random
 import re
 from pathlib import Path
 
-BUILDER_VERSION = "v2.0"
+BUILDER_VERSION = "v2.1"  # v2.1: filler families + slot_unit_id + filler_pool
 PILOT = Path("data/processed/multihoprag/pilot_30.json")
 CORPUS = Path("data/raw/multihoprag/corpus.json")
 OUTPUT = Path("data/processed/multihoprag/controlled_bundles_v2.json")
@@ -31,6 +31,15 @@ STOPWORDS = frozenset(
     "than then them they you your not but also more most such only over some "
     "any all can may its our out one two new said says".split()
 )
+
+
+def assert_current_bundle(payload):
+    """Fail fast (clear message) when a bundle predates the current builder."""
+    if payload.get("builder_version") != BUILDER_VERSION or not all(
+            "filler_pool" in q for q in payload.get("questions", [])):
+        raise SystemExit(
+            f"Stale bundle (builder_version={payload.get('builder_version')!r}, "
+            f"current={BUILDER_VERSION!r}). Regenerate: python -m src.evaluation.build_bundles_v2")
 
 
 def sha256_text(text):

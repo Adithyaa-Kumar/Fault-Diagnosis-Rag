@@ -19,7 +19,7 @@ N_SPECIALISTS = 3
 NOVELTY_THRESHOLD = 0.5
 ABSTENTION = re.compile(
     r"does not contain|do not contain|insufficient|no evidence|not enough|"
-    r"cannot determine|unable to determine|no relevant",
+    r"cannot determine|unable to determine|no relevant|^\s*none\.?\s*$",
     re.IGNORECASE,
 )
 STOP = frozenset(

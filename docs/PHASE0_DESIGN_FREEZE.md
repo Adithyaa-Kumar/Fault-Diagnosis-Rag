@@ -54,4 +54,6 @@ Defined and injected independently of diagnosis; the injected label lives only i
 
 ## Changelog
 
+- v1.2 (D-8, prompts): specialist role is extractive reading (copy each document's main claim verbatim), not relevance filtering. Evidence: with relevance-filtering prompts (`mh-v2-prompts-1`, `-2`) 22 of 24 specialists on 8 dev questions returned no facts and 7 of 8 baselines abstained. Prompt development used dev questions only, never the reviewed sample. Prompt hash is recorded in every output.
+- v1.1 (D-6): yes/no gold answers are scored by exact normalised yes/no (`multihop_yes_no_exact`); the HotpotQA F1 >= 0.5 rule accepted negated forms such as "Not yes". Extractor strips markdown emphasis before parsing. Non-yes/no gold keeps EM / F1 >= 0.5 via the unchanged `AnswerScorer`. Made before any valid real-model result existed; earlier saved runs predate it and are superseded.
 - v1: initial freeze.

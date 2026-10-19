@@ -188,3 +188,66 @@ def test_unreviewed_samples_are_refused_without_flag(tmp_path):
     m.write_text(json.dumps({"reviewed": True, "sample_ids": ["q1"]}), encoding="utf-8")
     ids, meta = rv.resolve_samples(argparse.Namespace(sample_manifest=str(m), sample_ids=None, allow_unreviewed=False))
     assert ids == ["q1"] and meta["reviewed"] is True
+
+
+def test_none_escape_word_is_not_flagged_as_specialist_fault(payload):
+    class NoneSpecialist(FakeModel):
+        def generate_answer(self, context, question, system_prompt, max_new_tokens=None):
+            r = super().generate_answer(context, question, system_prompt, max_new_tokens)
+            if "specialist in a parallel" in system_prompt:
+                r["answer"] = "NONE"
+            return r
+    rec = rv.run_trajectory(payload["questions"][0], "A_lowC_lowP", FaultType.NONE, NoneSpecialist())
+    assert rec["predicted_layer"] == "none" and rec["diagnosis_correct"]
+
+
+def test_baseline_sweep_summary_counts_abstentions(payload):
+    class Abstain(FakeModel):
+        def generate_answer(self, context, question, system_prompt, max_new_tokens=None):
+            r = super().generate_answer(context, question, system_prompt, max_new_tokens)
+            r["answer"] = "NONE" if "specialist in a parallel" in system_prompt else "Answer: Insufficient evidence"
+            return r
+    out = rv.run_baseline_sweep(payload, ["q1"], "D_highC_highP", Abstain())
+    s = out["summary"]
+    assert s["n"] == 1 and s["abstained"] == 1 and s["correct"] == 0 and s["specialists_with_no_facts"] == 3
+    good = rv.run_baseline_sweep(payload, ["q1"], "D_highC_highP", FakeModel())["summary"]
+    assert good["answered"] == 1 and good["correct"] == 1 and good["specialists_with_no_facts"] == 0
+
+
+def test_dev_selection_excludes_review_sample_and_is_deterministic():
+    from pathlib import Path
+    from src.evaluation import build_phase0_review_sheet as rs
+    path = Path("data/processed/multihoprag/controlled_bundles_v2.json")
+    if not path.exists():
+        pytest.skip("bundle not generated")
+    b = json.loads(path.read_text(encoding="utf-8"))
+    sample = rs.select_sample(b)
+    dev = rs.select_dev(b, sample, 8)
+    assert dev == rs.select_dev(b, sample, 8) and len(dev) == 8
+    assert not set(dev) & (set(sample) | set(rs.EXCLUDED))
+
+
+def test_resolve_excluded_falls_back_to_rederived_sample_when_manifest_missing(tmp_path):
+    from pathlib import Path
+    from src.evaluation import build_phase0_review_sheet as rs
+    path = Path("data/processed/multihoprag/controlled_bundles_v2.json")
+    if not path.exists():
+        pytest.skip("bundle not generated")
+    b = json.loads(path.read_text(encoding="utf-8"))
+    assert rv.resolve_excluded(b, str(tmp_path / "missing.json")) == rs.select_sample(b)
+    assert rv.resolve_excluded(b, None) == rs.select_sample(b)
+    m = tmp_path / "m.json"
+    m.write_text(json.dumps({"sample_ids": ["x"]}), encoding="utf-8")
+    assert rv.resolve_excluded(b, str(m)) == ["x"]
+
+
+def test_summaries_render_from_saved_outputs(payload, tmp_path):
+    rep = rv.run_interventions(payload, "q1", "D_highC_highP", FakeModel())
+    text = rv.summarize_interventions(rep)
+    assert "repair_summary" in text and "item_removal" in text and "claim_family_removal" in text
+    assert "BASELINE specialist extracts" in text
+    out = tmp_path / "f.jsonl"
+    rv.run_factorial(payload, ["q1"], FakeModel(), out)
+    table = rv.summarize_factorial(rv.read_records(out), ["q1"])
+    assert "coverage: 16/16 exact=True all_ok=True" in table
+    assert table.count("\n") >= 18 and "D_highC_highP" in table and "arbiter" in table

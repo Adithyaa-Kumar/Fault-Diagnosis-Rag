@@ -1,0 +1,26 @@
+{
+  "reviewed": false,
+  "reviewer": null,
+  "sample_ids": [
+    "mh_0836",
+    "mh_2211",
+    "mh_1480",
+    "mh_0669",
+    "mh_2474",
+    "mh_1017"
+  ],
+  "rejected_in_review": [
+    "mh_0791"
+  ],
+  "bundle_seed": 20261018,
+  "bundle_input_sha256": {
+    "pilot": "1d0595eb2a93481281c7f4882874a917fe53d4e099ec90a59002536c1d9c50d0",
+    "corpus": "20b61b5ab84de84a927420c5d265b7ec8d859ae49980699958a787ade9e4d28f"
+  },
+  "excluded_unreviewed": [
+    "mh_0174",
+    "mh_0533",
+    "mh_0639"
+  ],
+  "instructions": "After completing the review sheet set reviewed=true, fill reviewer, remove rejected IDs, and save as phase0_sample.json."
+}

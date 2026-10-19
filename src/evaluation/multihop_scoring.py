@@ -19,7 +19,8 @@ def extract_answer(output: str) -> str:
     if not isinstance(output, str):
         return ""
 
-    text = output.strip()
+    # Drop markdown emphasis/backticks so "**Answer:** Yes" parses like "Answer: Yes".
+    text = re.sub(r"[*`]+", "", output).strip()
     if not text:
         return ""
 
@@ -30,6 +31,14 @@ def extract_answer(output: str) -> str:
     )
     if labelled:
         text = labelled.group(1).strip()
+
+    # An explicit abstention is never an answer, whatever the answer type.
+    if re.search(
+        r"\b(insufficient evidence|insufficient information|the evidence is insufficient|"
+        r"unable to determine|not enough information|cannot determine|could not determine)\b",
+        text, flags=re.IGNORECASE,
+    ):
+        return ""
 
     # For yes/no answers, reject explicit contradictions or abstentions.
     yes_no = re.match(
@@ -81,7 +90,14 @@ def extract_answer(output: str) -> str:
 def score_multihop_answer(output: str, gold_answer: str) -> dict:
     """Extract an answer and score it with the unchanged canonical scorer."""
     extracted = extract_answer(output)
-    metrics = AnswerScorer.score_metrics(extracted, gold_answer)
+    gold_norm = AnswerScorer._normalise(gold_answer) if isinstance(gold_answer, str) else ""
+    if gold_norm in ("yes", "no"):
+        # Yes/no gold needs an exact yes/no: token-F1 >= 0.5 would accept "Not yes".
+        exact = AnswerScorer._normalise(extracted) == gold_norm
+        metrics = {"correct": exact, "exact_match": exact,
+                   "token_f1": 1.0 if exact else 0.0, "scoring_mode": "multihop_yes_no_exact"}
+    else:
+        metrics = AnswerScorer.score_metrics(extracted, gold_answer)
 
     return {
         "raw_output": output,

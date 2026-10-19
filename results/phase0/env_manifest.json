@@ -1,0 +1,121 @@
+{
+  "captured_utc": "2026-10-19T04:42:21.841787+00:00",
+  "project_root": "C:\\fault-diagnosis-rag",
+  "git": {
+    "is_repository": true,
+    "commit": "ae2572e3fb970e2dbbb2cb7bc9e130558446e3cf",
+    "working_tree_clean": false,
+    "dirty_files": [
+      "M docs/PHASE0_DESIGN_FREEZE.md",
+      " M docs/PHASE0_RUNBOOK.md",
+      " M src/evaluation/multihop_scoring.py",
+      " M tests/test_multihop_scoring.py",
+      "?? results/phase0/",
+      "?? src/evaluation/phase0_manifests.py",
+      "?? src/models/model_check.py",
+      "?? tests/test_phase0_manifests_and_model_check.py"
+    ],
+    "note": null
+  },
+  "python": {
+    "version": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "executable": "C:\\fault-diagnosis-rag\\venv\\Scripts\\python.exe"
+  },
+  "os": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "machine": "AMD64"
+  },
+  "key_packages": {
+    "torch": "2.12.0+cu126",
+    "transformers": "5.19.0",
+    "bitsandbytes": "0.50.2",
+    "accelerate": "1.15.0",
+    "pydantic": "2.14.1",
+    "pytest": "9.1.1",
+    "numpy": "2.5.4"
+  },
+  "all_packages": {
+    "accelerate": "1.15.0",
+    "annotated-doc": "0.0.5",
+    "annotated-types": "0.8.0",
+    "anyio": "4.15.1",
+    "bitsandbytes": "0.50.2",
+    "click": "8.5.0",
+    "cloudpickle": "3.1.2",
+    "colorama": "0.4.6",
+    "filelock": "3.32.3",
+    "fsspec": "2026.7.0",
+    "h11": "0.16.0",
+    "hf-xet": "1.7.0",
+    "httpcore2": "2.13.1",
+    "httpx2": "2.13.1",
+    "huggingface_hub": "2.2.0",
+    "idna": "3.20",
+    "iniconfig": "2.3.1",
+    "jinja2": "3.1.6",
+    "jiter": "0.17.0",
+    "joblib": "1.6.0",
+    "markdown-it-py": "4.2.0",
+    "markupsafe": "3.0.3",
+    "mdurl": "0.1.2",
+    "mpmath": "1.3.0",
+    "narwhals": "2.27.1",
+    "networkx": "3.6.1",
+    "numpy": "2.5.4",
+    "openai": "3.29.0",
+    "packaging": "26.3",
+    "pip": "26.2.1",
+    "pluggy": "1.6.0",
+    "psutil": "7.2.2",
+    "pydantic": "2.14.1",
+    "pydantic_core": "2.50.1",
+    "pygments": "2.21.0",
+    "pytest": "9.1.1",
+    "python-dotenv": "1.2.4",
+    "pyyaml": "6.0.3",
+    "regex": "2026.9.29",
+    "rich": "15.0.0",
+    "safetensors": "0.8.0",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "setuptools": "78.1.0",
+    "shellingham": "1.5.4",
+    "sniffio": "1.3.1",
+    "sympy": "1.14.0",
+    "threadpoolctl": "3.7.0",
+    "tokenizers": "0.23.3",
+    "torch": "2.12.0+cu126",
+    "tqdm": "4.70.1",
+    "transformers": "5.19.0",
+    "truststore": "0.10.5",
+    "typer": "0.27.3",
+    "typing-inspection": "0.4.4",
+    "typing_extensions": "4.16.0"
+  },
+  "config_hashes": {
+    "requirements.txt": {
+      "sha256": "46c992b593fd3bbc1f475a38891ba7cf82adb389d80e2b640627f9fd8c46ba91",
+      "bytes": 79
+    },
+    "requirements-llm.txt": {
+      "sha256": "b99fcadedc7c2a4b1a304446024cc6790b5cafe2f1f730a745016700085aba9f",
+      "bytes": 157
+    },
+    "docs/PHASE0_DESIGN_FREEZE.md": {
+      "sha256": "c7f58ebc5c41156b434f649df06613ef0d61f3297481b84a1059464e2f7cd8b1",
+      "bytes": 3847
+    },
+    "src/evaluation/run_multihop_v2.py": {
+      "sha256": "ad7e5bba86498d705dc082114b191ac1c3a53be5f098750f083062dd6b170c58",
+      "bytes": 16705
+    },
+    "src/evaluation/multihop_scoring.py": {
+      "sha256": "beb9eea24547838aee52ce444d64bd268153fd24e05817eb2c82f4a2b5e7575e",
+      "bytes": 3549
+    },
+    "src/pipeline/multihop_faults.py": {
+      "sha256": "331f1b6d22444bf1119f3b60431d97e52153cd999731188007385405119c7abb",
+      "bytes": 9656
+    }
+  }
+}

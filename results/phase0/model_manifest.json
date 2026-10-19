@@ -1,0 +1,198 @@
+{
+  "captured_utc": "2026-10-19T04:43:13.407606+00:00",
+  "model_id": "Qwen/Qwen2.5-7B-Instruct",
+  "revision_commit_hash": null,
+  "revision_note": "Resolved snapshot hash of what was actually loaded; null means unavailable.",
+  "quantization": {
+    "load_in_4bit": true,
+    "quant_type": "nf4",
+    "compute_dtype": "float16",
+    "double_quant": true
+  },
+  "dtype": "float16",
+  "inference": {
+    "do_sample": false,
+    "max_new_tokens": {
+      "specialist": 160,
+      "arbiter": 160
+    },
+    "chat_template": "tokenizer default"
+  },
+  "generation_config_loaded": {
+    "max_length": null,
+    "max_new_tokens": null,
+    "min_length": null,
+    "min_new_tokens": null,
+    "early_stopping": null,
+    "max_time": null,
+    "stop_strings": null,
+    "do_sample": true,
+    "num_beams": null,
+    "use_mtp": null,
+    "use_cache": null,
+    "cache_implementation": null,
+    "cache_config": null,
+    "max_cache_len": null,
+    "temperature": 0.7,
+    "top_k": 20,
+    "top_p": 0.8,
+    "min_p": null,
+    "top_h": null,
+    "typical_p": null,
+    "epsilon_cutoff": null,
+    "eta_cutoff": null,
+    "repetition_penalty": 1.05,
+    "encoder_repetition_penalty": null,
+    "length_penalty": null,
+    "no_repeat_ngram_size": null,
+    "bad_words_ids": null,
+    "renormalize_logits": null,
+    "forced_bos_token_id": null,
+    "forced_eos_token_id": null,
+    "remove_invalid_values": null,
+    "exponential_decay_length_penalty": null,
+    "suppress_tokens": null,
+    "begin_suppress_tokens": null,
+    "sequence_bias": null,
+    "token_healing": null,
+    "guidance_scale": null,
+    "watermarking_config": null,
+    "num_return_sequences": null,
+    "output_attentions": null,
+    "output_hidden_states": null,
+    "output_scores": null,
+    "output_logits": null,
+    "return_dict_in_generate": null,
+    "pad_token_id": 151643,
+    "bos_token_id": 151643,
+    "eos_token_id": [
+      151645,
+      151643
+    ],
+    "encoder_no_repeat_ngram_size": null,
+    "decoder_start_token_id": null,
+    "is_assistant": null,
+    "num_assistant_tokens": null,
+    "num_assistant_tokens_schedule": null,
+    "assistant_confidence_threshold": null,
+    "prompt_lookup_num_tokens": null,
+    "max_matching_ngram_size": null,
+    "assistant_early_exit": null,
+    "assistant_lookbehind": null,
+    "target_lookbehind": null,
+    "assistant_ensemble_weight": null,
+    "speculation_type": null,
+    "compile_config": null,
+    "disable_compile": null,
+    "continuous_batching_config": null,
+    "low_memory": null,
+    "penalty_alpha": null,
+    "dola_layers": null,
+    "diversity_penalty": null,
+    "num_beam_groups": null,
+    "constraints": null,
+    "force_words_ids": null,
+    "prefill_chunk_size": null,
+    "_from_model_config": null,
+    "transformers_version": "5.19.0"
+  },
+  "generation_config_note": "Applied by generate() even with do_sample=False (e.g. repetition_penalty); sampling fields are ignored when do_sample=False.",
+  "prompts": {
+    "version": "mh-v2-prompts-1",
+    "specialist_prompt": "You are one specialist in a parallel evidence system. You see only a subset of the documents; other specialists see the rest. Use only the supplied documents. List the facts in your documents that are relevant to the question, one per line, citing the Document ID. Do not answer the whole question and do not comment on documents you cannot see. If nothing is relevant, write exactly: No relevant facts.",
+    "arbiter_prompt": "You are the arbiter in a parallel retrieval-augmented system. Answer using only the specialist reports. Combine supported facts and do not invent missing facts. End with one final line. For yes/no questions use 'Answer: Yes' or 'Answer: No'. For other questions use 'Answer: <short answer>'. If the reports are insufficient use 'Answer: Insufficient evidence'.",
+    "max_new_tokens": {
+      "specialist": 160,
+      "arbiter": 160
+    },
+    "sha256": "245ec69d674d79e4d0991b8d10731e6e7a1905824c86773d0f9a4d94fdf9056b"
+  },
+  "license": {
+    "license": "apache-2.0",
+    "source": "model card README frontmatter"
+  },
+  "runtime": {
+    "torch": "2.12.0+cu126",
+    "cuda": "12.6",
+    "transformers": "5.19.0",
+    "bitsandbytes": "0.50.2"
+  },
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+    "total_memory_bytes": 6441926656
+  },
+  "load_seconds_measured": 32.3862792000873,
+  "vram_after_load_bytes": 5559839744,
+  "gates": {
+    "chat_template": {
+      "pass": true,
+      "rendered_tail": "_end|>\n<|im_start|>user\nContext:\nx\n\nQuestion:\ny<|im_end|>\n<|im_start|>assistant\n"
+    },
+    "generate": {
+      "ok": true,
+      "oom": false,
+      "answer": "Blue.",
+      "prompt_tokens": 34,
+      "generated_tokens": 3,
+      "latency_seconds": 1.1173660999629647,
+      "peak_vram_bytes": 5576039936,
+      "pass": true
+    },
+    "determinism": {
+      "pass": true,
+      "runs": 3,
+      "answers": [
+        "Specialist_1 report: The city council approved the 2024 transit budget.\nSpecialist_2 report: The 2024 transit budget includes three new bus routes.",
+        "Specialist_1 report: The city council approved the 2024 transit budget.\nSpecialist_2 report: The 2024 transit budget includes three new bus routes.",
+        "Specialist_1 report: The city council approved the 2024 transit budget.\nSpecialist_2 report: The 2024 transit budget includes three new bus routes."
+      ],
+      "settings": {
+        "do_sample": false,
+        "temperature": null,
+        "top_p": null,
+        "seed_required": false
+      },
+      "note": "Greedy decoding; GPU kernels can still differ across hardware or library versions."
+    },
+    "answer_extraction": {
+      "pass": true,
+      "probes": [
+        {
+          "gold": "Yes",
+          "raw_output": "Answer: Yes",
+          "has_answer_line": true,
+          "extracted": "Yes",
+          "parsed_yes_no": true,
+          "correct_non_gating": true
+        },
+        {
+          "gold": "No",
+          "raw_output": "Answer: No",
+          "has_answer_line": true,
+          "extracted": "No",
+          "parsed_yes_no": true,
+          "correct_non_gating": true
+        }
+      ],
+      "note": "Gates format compliance and parsing only (an 'Answer:' line that parses to Yes/No on unambiguous toys). Correctness is reported, not gated; abstaining on a toy fails the gate."
+    },
+    "realistic_prompt": {
+      "ok": true,
+      "oom": false,
+      "prompt_tokens": 651,
+      "generated_tokens": 5,
+      "latency_seconds": 1.1205284999450669,
+      "peak_vram_bytes": 5819102720,
+      "context_chars": 1809,
+      "max_position_embeddings": 32768,
+      "pass": true
+    },
+    "no_truncation": {
+      "pass": true,
+      "prompt_tokens": 651,
+      "max_position_embeddings": 32768,
+      "note": "The wrapper applies no truncation; this gate checks the longest prompt fits the window."
+    }
+  },
+  "all_gates_pass": true
+}
